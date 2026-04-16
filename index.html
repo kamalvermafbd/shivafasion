@@ -1600,6 +1600,13 @@ async function loadCategoryDropdown() {
     catSelect.innerHTML = `<option value="">Failed</option>`;
   }
 }
+  
+  function getVariantsByName(itemName){
+  return (window.allVariants || []).filter(
+    v => String(v.Name || "").trim().toLowerCase() ===
+         String(itemName || "").trim().toLowerCase()
+  );
+}
   function loadPOSItems(){
 
   const box = document.getElementById("posItems");
@@ -8061,7 +8068,28 @@ style="border-collapse:collapse;">
 <tr id="row-${index}" data-category="${esc(item["Category"])}">
   <td>${index + 1}</td>
 
-  <td>${esc(item["Name"])}</td>
+ <td style="vertical-align:top;line-height:1.6;">
+  <div style="font-weight:600;">
+    ${esc(item["Name"])}
+  </div>
+
+  ${
+    String(item["Cat2"] || "").toLowerCase() === "multi"
+      ? `
+        <div style="font-size:12px;color:#666;margin-top:4px;">
+          Variant (${getVariantsByName(item["Name"]).length})
+        </div>
+
+        ${getVariantsByName(item["Name"]).map(v => `
+          <div style="display:flex;gap:10px;font-size:13px;">
+            <span style="width:30px;">${esc(v.Unit)}</span>
+            <span>- ${Number(v.Price || 0)}/-</span>
+          </div>
+        `).join("")}
+      `
+      : ""
+  }
+</td>
 
   <td>
     <img src="${imgSrc}" 
