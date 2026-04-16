@@ -1199,9 +1199,37 @@ td:nth-child(8) { width: 220px; } /* Action */
        <select id="newItemCategory">
   <option value="">Select Category</option>
 </select>
-        
       </div>
+<div class="form-row">
+  <label>Fabric</label>
+  <input id="newItemFabric" type="text" placeholder="e.g. Cotton Blend">
+</div>
 
+<div class="form-row">
+  <label>GSM</label>
+  <select id="newItemGSM">
+    <option value="">Select GSM</option>
+  </select>
+</div>
+
+<div class="form-row">
+  <label>MOQ</label>
+  <input id="newItemMOQ" type="number" placeholder="MOQ">
+</div>
+
+<div class="form-row">
+  <label>Colors</label>
+  <div id="newItemColors" style="
+    border:1px solid #ddd;
+    padding:8px;
+    border-radius:6px;
+    max-height:120px;
+    overflow:auto;
+    background:#fff;
+  ">
+    Loading colors...
+  </div>
+</div>
       <div class="form-row">
         <label>Description</label>
         <textarea id="newItemDescription"
@@ -1209,20 +1237,22 @@ td:nth-child(8) { width: 220px; } /* Action */
   style="width:100%; min-height:80px; resize:vertical;"></textarea>
       </div>
 
-     <div class="form-row">
+ <div class="form-row">
   <label>Image URL</label>
-  <input id="newItemImage" type="text">
+  <div class="field-wrap">
+    <input id="newItemImage" type="text">
 
-  <label for="newItemImageUpload"
-         style="cursor:pointer;font-size:18px;text-align:center;">
-    📤
-  </label>
+    <label for="newItemImageUpload"
+           style="cursor:pointer;font-size:18px;">
+      📤
+    </label>
 
-  <input id="newItemImageUpload"
-         type="file"
-         accept="image/*"
-         style="display:none"
-         onchange="uploadNewItemImage(this)">
+    <input id="newItemImageUpload"
+           type="file"
+           accept="image/*"
+           style="display:none"
+           onchange="uploadNewItemImage(this)">
+  </div>
 </div>
 
       <div class="form-row">
@@ -7978,6 +8008,41 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
   reader.readAsDataURL(file);
 }
 
+async function loadProductMasters() {
+  try {
+    const [gsmList, colorList] = await Promise.all([
+      apiGet("getGSMMaster"),
+      apiGet("getColorMaster")
+    ]);
+
+    // ✅ GSM dropdown
+    const gsmEl = document.getElementById("newItemGSM");
+    if (gsmEl) {
+      gsmEl.innerHTML = `<option value="">Select GSM</option>` +
+        (gsmList || []).map(g =>
+          `<option value="${g.GSM}">${g.GSM}</option>`
+        ).join("");
+    }
+
+    // ✅ Colors checklist
+    const colorBox = document.getElementById("newItemColors");
+    if (colorBox) {
+      colorBox.innerHTML = (colorList || []).map(c => `
+        <label style="display:block;margin-bottom:4px;">
+          <input type="checkbox" value="${c.Color}">
+          ${c.Color}
+        </label>
+      `).join("");
+    }
+
+  } catch (err) {
+    console.error("Product master load error:", err);
+
+    const colorBox = document.getElementById("newItemColors");
+    if (colorBox) colorBox.innerHTML = "Failed to load colors";
+  }
+}
+  
 function loadMenuData() {
     if (!document.querySelector('.nav-btn[data-page="pageMenu"]').classList.contains('active')) return;
 
@@ -8165,7 +8230,9 @@ function openCreateItemModal(){
   document.getElementById("newItemSection").value = "";
   document.getElementById("newItemCategory").innerHTML =
     `<option value="">Select Category</option>`;
-
+  // 🔥 NEW
+  loadProductMasters();
+  
   document.getElementById("createItemModal")
     .classList.add("active");
 }
@@ -8222,7 +8289,13 @@ const section = document.getElementById("newItemSection").value.trim();
   ? "TRUE"
   : "";
   const cat2 = document.getElementById("newItemCat2").value;
+const fabric = document.getElementById("newItemFabric").value.trim();
+const gsm = document.getElementById("newItemGSM").value.trim();
+const moq = document.getElementById("newItemMOQ").value.trim();
 
+const colors = [...document.querySelectorAll("#newItemColors input:checked")]
+  .map(el => el.value)
+  .join(", ");
   // ✅ basic validation
   if(!name){
     alert("⚠️ Name is required");
@@ -8267,16 +8340,19 @@ if(duplicate){
   return;
 }
   
-  const payload = {
-    Name: name,
-    Section: section,
-    Category: category,
-    Description: description,
-    "Image Url": imageUrl,
-    Hotselling: hot,
-    Cat2: cat2
-  };
-
+ const payload = {
+  Name: name,
+  Section: section,
+  Category: category,
+  Fabric: fabric,
+  GSM: gsm,
+  MOQ: moq,
+  Colors: colors,
+  Description: description,
+  "Image Url": imageUrl,
+  Hotselling: hot,
+  Cat2: cat2
+};
  if(btn){
   btn.disabled = false;
   btn.textContent = "Create Item";
