@@ -2324,6 +2324,7 @@ if(window.pendingNewItem && !unit && id !== "unit"){
   if(el){
     el.removeAttribute("disabled");
     el.focus();
+    if (typeof el.select === "function") el.select();
   }
 }
 
