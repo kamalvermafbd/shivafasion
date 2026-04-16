@@ -3,7 +3,9 @@ const CACHE_NAME = "shiva-admin-cache-v2"; // 🔥 version update
 const URLS_TO_CACHE = [
   "/",
   "/index.html",
-  "/manifest.json"
+  "/manifest.json",
+  "/icon-192.png",
+  "/favicon.ico"
 ];
 
 // ==========================
