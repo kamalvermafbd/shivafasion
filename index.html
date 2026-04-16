@@ -2635,7 +2635,9 @@ function openManageMenu(index){
   currentManageIndex = index;
 
   const item = window.menuData[index];
+  console.log("MANAGE ITEM FULL:", item);
   window.currentManageSection = item.Section || "";
+  
   clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
   document.getElementById("manageImage").value =
   item["Image Url"] || item.Image || "";
