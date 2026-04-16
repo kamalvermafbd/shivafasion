@@ -3065,6 +3065,8 @@ function saveNewSingleItem(){
   }
 
   const payload = collectNewItemPayload();
+    console.log("STEP2 final API payload:", payload);
+    
 if(!validateItemPayload(payload, () => {
   btn.disabled = false;
   btn.innerText = "Create Final";
