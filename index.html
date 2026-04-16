@@ -8007,7 +8007,6 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
 
   reader.readAsDataURL(file);
 }
-
 async function loadProductMasters() {
   try {
     const [gsmList, colorList] = await Promise.all([
@@ -8020,7 +8019,7 @@ async function loadProductMasters() {
     if (gsmEl) {
       gsmEl.innerHTML = `<option value="">Select GSM</option>` +
         (gsmList || []).map(g =>
-          `<option value="${g.GSM}">${g.GSM}</option>`
+          `<option value="${g}">${g}</option>`
         ).join("");
     }
 
@@ -8029,8 +8028,8 @@ async function loadProductMasters() {
     if (colorBox) {
       colorBox.innerHTML = (colorList || []).map(c => `
         <label style="display:block;margin-bottom:4px;">
-          <input type="checkbox" value="${c.Color}">
-          ${c.Color}
+          <input type="checkbox" value="${c}">
+          ${c}
         </label>
       `).join("");
     }
