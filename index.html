@@ -1131,8 +1131,37 @@ td:nth-child(8) { width: 220px; } /* Action */
   height:16px;
   margin:0;
 }
+.multi-select-dropdown{
+  position: relative;
+  width: 100%;
+}
 
-    
+.multi-select-btn{
+  border:1px solid #ccc;
+  border-radius:6px;
+  padding:10px;
+  background:#fff;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.multi-select-list{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  z-index:20;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:6px;
+  max-height:220px;
+  overflow-y:auto;
+  padding:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+    .color-row{
+  grid-template-columns: 120px 1fr !important;
+}
   </style>
 </head>
 <body>
@@ -1240,17 +1269,20 @@ td:nth-child(8) { width: 220px; } /* Action */
   <input id="newItemMOQ" type="number" placeholder="MOQ">
 </div>
 
-<div class="form-row">
+<div class="form-row color-row">
   <label>Colors</label>
-  <div id="newItemColors" style="
-  border:1px solid #ddd;
-  padding:8px;
-  border-radius:6px;
-  background:#fff;
-">
-    Loading colors...
+
+  <div class="multi-select-dropdown">
+    <div id="colorDropdownBtn" class="multi-select-btn" onclick="toggleColorDropdown()">
+      Select Colors ▼
+    </div>
+
+    <div id="newItemColors" class="multi-select-list" style="display:none;">
+    </div>
   </div>
 </div>
+  
+   
       <div class="form-row">
         <label>Description</label>
         <textarea id="newItemDescription"
@@ -8054,8 +8086,7 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
           font-size:13px;
           cursor:pointer;
         ">
-          <input type="checkbox" value="${c.Color}">
-
+         <input type="checkbox" value="${c.Color}" onchange="updateColorDropdownText()">
           <span style="
             width:14px;
             height:14px;
@@ -8076,6 +8107,22 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
     const colorBox = document.getElementById("newItemColors");
     if (colorBox) colorBox.innerHTML = "Failed to load colors";
   }
+}
+
+function updateColorDropdownText(){
+  const checked = [...document.querySelectorAll('#newItemColors input:checked')]
+    .map(el => el.value);
+
+  document.getElementById("colorDropdownBtn").textContent =
+    checked.length ? checked.join(", ") : "Select Colors ▼";
+}
+  
+function toggleColorDropdown(){
+  const box = document.getElementById("newItemColors");
+  if(!box) return;
+
+  box.style.display =
+    box.style.display === "none" ? "block" : "none";
 }
   
 function loadMenuData() {
