@@ -8155,8 +8155,10 @@ function prepareNewItemForManage(payload){
   closeCreateItemModal();
 
   window.menuData = window.menuData || [];
-  window.menuData.push(payload);
-
+  window.pendingNewItem = {
+  ...payload,
+  Section: document.getElementById("newItemSection")?.value || payload.Section || ""
+};
   const tempIndex = window.menuData.length - 1;
 
   window.forcePriceSetup = true;
