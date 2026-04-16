@@ -1431,7 +1431,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxU-ryQX_XQilvBFwQTBFQkeK1xSupEyMi9FiYKpHKgUagYsQaH_IQ7jJKGGXeMdT_diQ/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbzuBiXVRMYsCh2T6vrdqB8tRoC53hgpq_i93Iry3L0wm6Peowxx4iSre3sWBBPX1bxkVg/exec";
 
 // =========================
 // GET API
@@ -3166,15 +3166,13 @@ const focusInvalidField = (id) => {
 };;
     
   const item = window.menuData[currentManageIndex];
-
-  
   const type = window.currentItemType;
 
   // 🔥 common fields
   const payload = {
     Name: item.Name,
     Unit: document.getElementById("unit").value,
-    
+    Section: window.currentManageSection || "",
 Image_Url: document.getElementById("manageImage").value.trim(),
 Description: document.getElementById("manageDescription").value.trim(),
 HotSelling: document.getElementById("manageHotSelling").checked ? "TRUE" : "",    
