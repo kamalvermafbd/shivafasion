@@ -1109,6 +1109,29 @@ td:nth-child(8) { width: 220px; } /* Action */
 .orderbill-footer button{
   background: #28a745;
 }
+
+#newItemColors{
+  min-height: 180px !important;
+  max-height: 220px !important;
+  overflow-y: auto;
+  width: 100%;
+}
+
+#newItemColors label{
+  display:flex !important;
+  align-items:center;
+  gap:8px;
+  padding:4px 2px;
+  font-size:13px;
+  cursor:pointer;
+}
+
+#newItemColors input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  margin:0;
+}
+
     
   </style>
 </head>
@@ -8007,14 +8030,13 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
 
   reader.readAsDataURL(file);
 }
-async function loadProductMasters() {
+  async function loadProductMasters() {
   try {
     const [gsmList, colorList] = await Promise.all([
       apiGet("getGSMMaster"),
       apiGet("getColorMaster")
     ]);
 
-    // ✅ GSM dropdown
     const gsmEl = document.getElementById("newItemGSM");
     if (gsmEl) {
       gsmEl.innerHTML = `<option value="">Select GSM</option>` +
@@ -8023,13 +8045,29 @@ async function loadProductMasters() {
         ).join("");
     }
 
-    // ✅ Colors checklist
     const colorBox = document.getElementById("newItemColors");
     if (colorBox) {
       colorBox.innerHTML = (colorList || []).map(c => `
-        <label style="display:block;margin-bottom:4px;">
-          <input type="checkbox" value="${c}">
-          ${c}
+        <label style="
+          display:flex;
+          align-items:center;
+          gap:8px;
+          margin-bottom:6px;
+          font-size:13px;
+          cursor:pointer;
+        ">
+          <input type="checkbox" value="${c.Color}">
+
+          <span style="
+            width:14px;
+            height:14px;
+            border-radius:3px;
+            border:1px solid #ccc;
+            background:${c.Hex};
+            display:inline-block;
+          "></span>
+
+          <span>${c.Color}</span>
         </label>
       `).join("");
     }
