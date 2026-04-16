@@ -9063,7 +9063,7 @@ document.addEventListener("DOMContentLoaded", function(){
         
    <div class="form-row">  
 <label>MRP</label>
-<input id="mrp" type="number" disabled placeholder="MRP" oninput="calculatePrice()">
+<input id="mrp" type="number" disabled placeholder="MRP" onfocus="this.select()" oninput="calculatePrice()">
        <span class="edit-btn" onclick="enableEdit('mrp')">✏️</span>
    </div>
          <div class="form-row"> 
