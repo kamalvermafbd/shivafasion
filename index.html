@@ -8148,17 +8148,22 @@ function resetCreateItemForm(){
  document.getElementById("newItemHot").checked = false;
   document.getElementById("newItemCat2").value = "Single";
 }
-
 function prepareNewItemForManage(payload){
-  window.pendingNewItem = payload;
+  console.log("STEP1 before pending:", payload);
+  console.log("STEP1 section DOM:", document.getElementById("newItemSection")?.value);
+
+  window.pendingNewItem = {
+    ...payload,
+    Section: document.getElementById("newItemSection")?.value || payload.Section || ""
+  };
+
+  console.log("STEP1 pending final:", window.pendingNewItem);
 
   closeCreateItemModal();
 
   window.menuData = window.menuData || [];
-  window.pendingNewItem = {
-  ...payload,
-  Section: document.getElementById("newItemSection")?.value || payload.Section || ""
-};
+  window.menuData.push(window.pendingNewItem);
+
   const tempIndex = window.menuData.length - 1;
 
   window.forcePriceSetup = true;
