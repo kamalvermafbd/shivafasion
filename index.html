@@ -9068,7 +9068,7 @@ document.addEventListener("DOMContentLoaded", function(){
    </div>
          <div class="form-row"> 
       <label>Discount %</label>
-<input id="discount" type="number" disabled placeholder="Discount %" oninput="calculatePrice()">
+<input id="discount" type="number" disabled placeholder="Discount %"  onfocus="this.select()" oninput="calculatePrice()">
              <span class="edit-btn" onclick="enableEdit('discount')">✏️</span>
          </div>
          <div class="form-row"> 
@@ -9076,14 +9076,14 @@ document.addEventListener("DOMContentLoaded", function(){
 <select id="gstIncluded"disabled  onchange="calculatePrice()">
   <option>Yes</option>
   <option>No</option>
-  <option>Not Applicable</option>
+  <option selected>Not Applicable</option>
   
 </select>
            <span class="edit-btn" onclick="enableEdit('gstIncluded')">✏️</span>
          </div>
          <div class="form-row"> 
 <label>GST Rate (%)</label>
-<input id="gstRate" type="number" disabled  placeholder="GST %" oninput="calculatePrice()">
+<input id="gstRate" type="number" disabled  placeholder="GST %"  onfocus="this.select()" oninput="calculatePrice()">
       <span class="edit-btn" onclick="enableEdit('gstRate')">✏️</span>      
            
          </div>
