@@ -1185,6 +1185,15 @@ td:nth-child(8) { width: 220px; } /* Action */
         <input id="newItemName" type="text">
       </div>
 
+<div class="form-row">
+  <label>Section</label>
+  <select id="newItemSection" onchange="loadCategoryDropdown()">
+    <option value="">Select Section</option>
+    <option value="Men">Men</option>
+    <option value="Women">Women</option>
+    <option value="Kids">Kids</option>
+  </select>
+</div>
       <div class="form-row">
         <label>Category</label>
        <select id="newItemCategory">
@@ -1556,10 +1565,42 @@ if (pageId === 'pageTable') {
   let unitList = [];
 let menuItems = [];
 let cart = [];
+  let categoryMaster = [];
   let isMenuReady = false;
 let pendingVariants = 0;
 let manageVariants = [];
 let manageVariantIndex = 0; // 🔥 rename
+
+
+async function loadCategoryDropdown() {
+  const section = document.getElementById("newItemSection").value;
+  const catSelect = document.getElementById("newItemCategory");
+
+  catSelect.innerHTML = `<option value="">Loading...</option>`;
+
+  try {
+    // 🔥 first time API load
+    if (categoryMaster.length === 0) {
+      categoryMaster = await apiGet("getCategories");
+    }
+
+    catSelect.innerHTML = `<option value="">Select Category</option>`;
+
+    if (!section) return;
+
+    const filtered = categoryMaster.filter(
+      row => row.Section === section
+    );
+
+    catSelect.innerHTML += filtered.map(row =>
+      `<option value="${row.Cat}">${row.Cat}</option>`
+    ).join("");
+
+  } catch (err) {
+    console.error("Category dropdown error:", err);
+    catSelect.innerHTML = `<option value="">Failed</option>`;
+  }
+}
   
   function loadPOSItems(){
 
@@ -2596,6 +2637,7 @@ function openManageMenu(index){
   currentManageIndex = index;
 
   const item = window.menuData[index];
+  window.currentManageSection = item.Section || "";
   clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
   document.getElementById("manageImage").value =
   item["Image Url"] || item.Image || "";
@@ -4795,6 +4837,10 @@ modal.classList.add("active");
     
 }
 
+
+
+
+  
 function closeBillModal(){
   const modal = document.getElementById("billModal");
   if(modal){
@@ -8081,17 +8127,11 @@ function toggleHotSelling(index, checked){
 
   
 function openCreateItemModal(){
- resetCreateItemForm();   // 🔥 IMPORTANT
-  const el = document.getElementById("newItemCategory");
+  resetCreateItemForm();
 
-  if(el){
-    const cats = window.CATEGORY_OPTIONS || [];
-
-    el.innerHTML = `<option value="">Select Category</option>` +
-      cats.map(cat =>
-        `<option value="${cat}">${cat}</option>`
-      ).join("");
-  }
+  document.getElementById("newItemSection").value = "";
+  document.getElementById("newItemCategory").innerHTML =
+    `<option value="">Select Category</option>`;
 
   document.getElementById("createItemModal")
     .classList.add("active");
@@ -8134,6 +8174,7 @@ if(btn){
 }
   
   const name = document.getElementById("newItemName").value.trim();
+const section = document.getElementById("newItemSection").value.trim();  
   const category = document.getElementById("newItemCategory").value.trim();
   const description = document.getElementById("newItemDescription").value.trim();
   const imageUrl = document.getElementById("newItemImage").value.trim();
@@ -8151,7 +8192,14 @@ if(btn){
 }
     return;
   }
-
+if(!section){
+  alert("⚠️ Section is required");
+  if(btn){
+    btn.disabled = false;
+    btn.textContent = "Create Item";
+  }
+  return;
+}
   if(!category){
     
     alert("⚠️ Category is required");
@@ -8181,6 +8229,7 @@ if(duplicate){
   
   const payload = {
     Name: name,
+    Section: section,
     Category: category,
     Description: description,
     "Image Url": imageUrl,
