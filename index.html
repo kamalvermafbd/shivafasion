@@ -2334,7 +2334,7 @@ function fillPriceFields(item){
   document.getElementById("discount").value = item.Discount_Percent || 0;
   document.getElementById("gstRate").value = parseFloat(item.GST_Rate) || 0;
 
-  document.getElementById("gstIncluded").value = item.GST_Included || "Yes";
+  document.getElementById("gstIncluded").value = item.GST_Included || "Not Applicable";
 
   calculatePrice();
 }
@@ -2371,7 +2371,7 @@ function fillPriceFields(item){
 
   document.getElementById("gstRate").value = parseFloat(v.GST_Rate) || 0;
 
-  document.getElementById("gstIncluded").value = v.GST_Included || "Yes";
+  document.getElementById("gstIncluded").value = v.GST_Included || "Not Applicable";
 
   calculatePrice();
 fillOtherFields(v);
