@@ -1571,7 +1571,6 @@ let pendingVariants = 0;
 let manageVariants = [];
 let manageVariantIndex = 0; // 🔥 rename
 
-
 async function loadCategoryDropdown() {
   const section = document.getElementById("newItemSection").value;
   const catSelect = document.getElementById("newItemCategory");
@@ -1579,9 +1578,9 @@ async function loadCategoryDropdown() {
   catSelect.innerHTML = `<option value="">Loading...</option>`;
 
   try {
-    // 🔥 first time API load
-    if (categoryMaster.length === 0) {
-      categoryMaster = await apiGet("getCategories");
+    if (!Array.isArray(categoryMaster) || categoryMaster.length === 0) {
+      const res = await apiGet("getCatTable");
+      categoryMaster = Array.isArray(res) ? res : (res.data || []);
     }
 
     catSelect.innerHTML = `<option value="">Select Category</option>`;
@@ -1601,7 +1600,6 @@ async function loadCategoryDropdown() {
     catSelect.innerHTML = `<option value="">Failed</option>`;
   }
 }
-  
   function loadPOSItems(){
 
   const box = document.getElementById("posItems");
