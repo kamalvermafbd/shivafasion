@@ -3093,6 +3093,7 @@ if(!validateItemPayload(payload, () => {
 function collectNewItemPayload(){
   return {
     ...window.pendingNewItem,
+    Section: document.getElementById("newItemSection").value,
     Hotselling: document.getElementById("manageHotSelling").checked ? "TRUE" : "",
     Unit: document.getElementById("unit").value,
     MRP: parseFloat(document.getElementById("mrp").value) || 0,
