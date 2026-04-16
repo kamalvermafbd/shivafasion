@@ -3,8 +3,7 @@ const CACHE_NAME = "shiva-admin-cache-v2"; // 🔥 version update
 const URLS_TO_CACHE = [
   "/",
   "/index.html",
-  "/manifest.json",
-  "/offline.html"
+  "/manifest.json"
 ];
 
 // ==========================
@@ -51,7 +50,7 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(request)
         .then(response => response)
-        .catch(() => caches.match("/offline.html"))
+        .catch(() => caches.match("/index.html"))
     );
     return;
   }
