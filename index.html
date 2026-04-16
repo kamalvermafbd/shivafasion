@@ -1274,10 +1274,14 @@ td:nth-child(8) { width: 220px; } /* Action */
   <label>Colors</label>
 
   <div class="multi-select-dropdown">
-    <div id="colorDropdownBtn" class="multi-select-btn" onclick="toggleColorDropdown()">
-      Select Colors ▼
-    </div>
+   
+<div id="colorDropdownBtn"
+     class="multi-select-btn"
+     onclick="toggleColorDropdown()">
+  Loading colors... ▼
+</div>
 
+    
     <div id="newItemColors" class="multi-select-list" style="display:none;">
     </div>
   </div>
@@ -8100,6 +8104,9 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
           <span>${c.Color}</span>
         </label>
       `).join("");
+
+      document.getElementById("colorDropdownBtn").innerText =
+  "Select Colors ▼";
     }
 
   } catch (err) {
@@ -8119,11 +8126,11 @@ function updateColorDropdownText(){
 }
   
 function toggleColorDropdown(){
-  const box = document.getElementById("newItemColors");
-  if(!box) return;
+  const list = document.getElementById("newItemColors");
+  if(!list) return;
 
-  box.style.display =
-    box.style.display === "none" ? "block" : "none";
+  list.style.display =
+    list.style.display === "block" ? "none" : "block";
 }
   
 function loadMenuData() {
@@ -8309,7 +8316,10 @@ function toggleHotSelling(index, checked){
   
 function openCreateItemModal(){
   resetCreateItemForm();
-
+const colorBox = document.getElementById("newItemColors");
+if(colorBox){
+  colorBox.innerHTML = `<div style="padding:8px;color:#666;">Loading colors...</div>`;
+}
   document.getElementById("newItemSection").value = "";
   document.getElementById("newItemCategory").innerHTML =
     `<option value="">Select Category</option>`;
@@ -8319,7 +8329,18 @@ function openCreateItemModal(){
   document.getElementById("createItemModal")
     .classList.add("active");
 }
+  
+document.addEventListener("click", function(e){
+  const dropdown = document.querySelector(".multi-select-dropdown");
+  const list = document.getElementById("newItemColors");
 
+  if(!dropdown || !list) return;
+
+  if(!dropdown.contains(e.target)){
+    list.style.display = "none";
+  }
+});
+  
 function closeCreateItemModal(){
   document.getElementById("createItemModal")
     .classList.remove("active");
