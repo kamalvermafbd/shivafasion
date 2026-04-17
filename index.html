@@ -8307,8 +8307,13 @@ document.getElementById("menuSearch")
       </div>
 
       <div class="form-row">
+        <label>Section</label>
+        <select id="editItemSection" onchange="loadEditCategoryDropdown()"></select>
+      </div>
+
+      <div class="form-row">
         <label>Category</label>
-        <input id="editItemCategory" type="text" value="${item.Category || ""}">
+        <select id="editItemCategory"></select>
       </div>
 
       <div class="form-row">
@@ -8318,12 +8323,27 @@ document.getElementById("menuSearch")
 
       <div class="form-row">
         <label>GSM</label>
-        <input id="editItemGSM" type="text" value="${item.GSM || ""}">
+        <select id="editItemGSM"></select>
       </div>
 
-      <div class="form-row">
+      <!-- 🔥 SAME COLOR UI -->
+      <div class="form-row color-row">
         <label>Colors</label>
-        <input id="editItemColors" type="text" value="${item.Colors || ""}">
+
+        <div class="multi-select-dropdown">
+
+          <div id="editColorDropdownBtn"
+               class="multi-select-btn"
+               onclick="toggleEditColorDropdown()">
+            Select Colors ▼
+          </div>
+
+          <div id="editItemColors"
+               class="multi-select-list"
+               style="display:none;">
+          </div>
+
+        </div>
       </div>
 
       <div style="margin-top:10px;">
@@ -8334,8 +8354,53 @@ document.getElementById("menuSearch")
   `;
 
   document.getElementById("manageItemModal").classList.add("active");
+
+  // 🔥 dropdown load
+  loadEditSectionDropdown(item.Section);
+  loadEditGSMDropdown(item.GSM);
+
+  setTimeout(() => {
+    loadEditCategoryDropdown(item.Category);
+    loadEditColorDropdown(item.Colors); // 🔥 IMPORTANT
+  }, 200);
 }
-  
+
+  function loadEditSectionDropdown(selected){
+
+  const select = document.getElementById("editItemSection");
+
+  const sections = Object.keys(window.sectionCategoryMap || {});
+
+  select.innerHTML = `<option value="">Select Section</option>` +
+    sections.map(s => `<option value="${s}">${s}</option>`).join("");
+
+  if(selected) select.value = selected;
+}
+
+  function loadEditCategoryDropdown(selected){
+
+  const section = document.getElementById("editItemSection").value;
+  const select = document.getElementById("editItemCategory");
+
+  const cats = window.sectionCategoryMap?.[section] || [];
+
+  select.innerHTML = `<option value="">Select Category</option>` +
+    cats.map(c => `<option value="${c}">${c}</option>`).join("");
+
+  if(selected) select.value = selected;
+}
+
+  function loadEditGSMDropdown(selected){
+
+  const select = document.getElementById("editItemGSM");
+
+  const gsmList = window.gsmList || [];
+
+  select.innerHTML = `<option value="">Select GSM</option>` +
+    gsmList.map(g => `<option value="${g}">${g}</option>`).join("");
+
+  if(selected) select.value = selected;
+}
 function saveItemChanges(index){
 
   const updatedData = {
