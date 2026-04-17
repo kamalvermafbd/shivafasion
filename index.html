@@ -1519,7 +1519,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbx1Z8L3B20Vw3WgLRd0-Rsz7lZornu0PKNKgM_SSbTnt6UDjZ50hMyvtMSgPeMU5XMG/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwOl-BW1VsvR7CO_rCRWKRYWckWZ2gGJ5GrwuYJgFlpFJn76SSL2aZazIeclJ0RcRmkcQ/exec";
 
 // =========================
 // GET API
@@ -1658,35 +1658,25 @@ let cart = [];
 let pendingVariants = 0;
 let manageVariants = [];
 let manageVariantIndex = 0; // 🔥 rename
-
-async function loadCategoryDropdown() {
+  
+function loadCategoryDropdown(){
   const section = document.getElementById("newItemSection").value;
-  const catSelect = document.getElementById("newItemCategory");
+  const catEl = document.getElementById("newItemCategory");
 
-  catSelect.innerHTML = `<option value="">Loading...</option>`;
+  if(!catEl) return;
 
-  try {
-    if (!Array.isArray(categoryMaster) || categoryMaster.length === 0) {
-      const res = await apiGet("getCatTable");
-      categoryMaster = Array.isArray(res) ? res : (res.data || []);
-    }
-
-    catSelect.innerHTML = `<option value="">Select Category</option>`;
-
-    if (!section) return;
-
-    const filtered = categoryMaster.filter(
-      row => row.Section === section
-    );
-
-    catSelect.innerHTML += filtered.map(row =>
-      `<option value="${row.Cat}">${row.Cat}</option>`
-    ).join("");
-
-  } catch (err) {
-    console.error("Category dropdown error:", err);
-    catSelect.innerHTML = `<option value="">Failed</option>`;
+  if(!section || !window.sectionCategoryMap){
+    catEl.innerHTML = `<option value="">Select Category</option>`;
+    return;
   }
+
+  const categories = window.sectionCategoryMap[section] || [];
+
+  catEl.innerHTML =
+    `<option value="">Select Category</option>` +
+    categories.map(c =>
+      `<option value="${c}">${c}</option>`
+    ).join("");
 }
   
   function getVariantsByName(itemName){
@@ -8085,6 +8075,26 @@ function getMOQ(item){
 
   return colorCount * variantCount;
 }
+
+async function loadSectionCategory() {
+  try {
+    const map = await apiGet("getSectionCategoryMap");
+
+    window.sectionCategoryMap = map || {};
+
+    const sectionEl = document.getElementById("newItemSection");
+
+    if(sectionEl){
+      sectionEl.innerHTML = `<option value="">Select Section</option>` +
+        Object.keys(map).map(sec =>
+          `<option value="${sec}">${sec}</option>`
+        ).join("");
+    }
+
+  } catch (err) {
+    console.error("Section load error:", err);
+  }
+}
   
   async function loadProductMasters() {
   try {
@@ -8351,6 +8361,7 @@ if(colorBox){
     `<option value="">Select Category</option>`;
   // 🔥 NEW
   loadProductMasters();
+loadSectionCategory();   // 🔥 ADD THIS
   
   document.getElementById("createItemModal")
     .classList.add("active");
