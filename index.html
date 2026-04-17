@@ -1368,33 +1368,67 @@ td:nth-child(8) { width: 220px; } /* Action */
 </div>
 
 <!-- 🔥 YAHI PASTE KARNA HAI -->
+
+
 <div id="updateItemModal" class="modalitem-overlay">
   <div class="manage-modal-box">
     <h3>✏️ Update Item</h3>
 
-    <div class="price-form">
+```
+<div class="price-form">
 
-      <div class="form-row">
-        <label>Name</label>
-        <input id="updateName" type="text">
+  <div class="form-row">
+    <label>Name</label>
+    <input id="updateName" type="text">
+  </div>
+
+  <div class="form-row">
+    <label>Section</label>
+    <select id="updateSection" onchange="loadUpdateCategoryDropdown()">
+      <option>Loading...</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label>Category</label>
+    <select id="updateCategory">
+      <option>Select Category</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label>GSM</label>
+    <select id="updateGSM">
+      <option>Loading...</option>
+    </select>
+  </div>
+
+  <div class="form-row color-row">
+    <label>Colors</label>
+
+    <div class="multi-select-dropdown">
+      <div id="updateColorBtn" class="multi-select-btn">
+        Loading colors...
       </div>
 
-      <div class="form-row">
-        <label>Section</label>
-        <input id="updateSection" type="text">
-      </div>
-
-      <div class="form-row">
-        <label>Category</label>
-        <input id="updateCategory" type="text">
-      </div>
-
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
-        <button onclick="updateExistingItem()">Update Item</button>
-        <button onclick="closeUpdateModal()">Cancel</button>
-      </div>
-
+      <div id="updateColors" class="multi-select-list" style="display:none;"></div>
     </div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+    <button onclick="updateExistingItem()">Update Item</button>
+    <button onclick="closeUpdateModal()">Cancel</button>
+  </div>
+
+</div>
+
+
+  </div>
+</div>
+
+
+
+    
   </div>
 </div>
       
@@ -2767,24 +2801,59 @@ function stopBarcodeScanner() {
 }
 
 
-function openUpdateModal(index){
-console.log("🔥 openUpdateModal called", index);
+async function openUpdateModal(index){
+
   const item = window.menuData[index];
 
-  // 🔥 store current item id
+  const modal = document.getElementById("updateItemModal");
+  modal.classList.add("active");
+
+  // 🔥 store id
   window.currentEditId = item.itemId;
 
-  // 🔥 open modal
-  document.getElementById("updateItemModal").classList.add("active");
+  // 🔥 loading state
+  document.getElementById("updateSection").innerHTML = `<option>Loading...</option>`;
+  document.getElementById("updateGSM").innerHTML = `<option>Loading...</option>`;
+  document.getElementById("updateColorBtn").innerText = "Loading...";
+
+  // 🔥 load masters (reuse same functions)
+  await loadProductMasters();   // already hai tere paas
 
   // 🔥 fill fields
   document.getElementById("updateName").value = item.Name || "";
+
   document.getElementById("updateSection").value = item.Section || "";
+  loadUpdateCategoryDropdown();
   document.getElementById("updateCategory").value = item.Category || "";
 
-  console.log("✅ Update modal opened for:", item.itemId);
+  document.getElementById("updateGSM").value = (item.GSM || "").trim();
+
+  setUpdateSelectedColors(item.Colors);
+
+  console.log("✅ Update modal ready");
 }
 
+  function loadUpdateCategoryDropdown(){
+
+  const section = document.getElementById("updateSection").value;
+  const catEl = document.getElementById("updateCategory");
+
+  if(!section || !window.sectionCategoryMap){
+    catEl.innerHTML = `<option>Select Category</option>`;
+    return;
+  }
+
+  const categories = window.sectionCategoryMap[section] || [];
+
+  catEl.innerHTML =
+    `<option>Select Category</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+  function setUpdateSelectedColors(colors){
+  setSelectedColors(colors); // reuse
+}
+  
   
 let currentManageIndex = null;
   
