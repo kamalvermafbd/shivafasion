@@ -1626,7 +1626,7 @@ if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
   loadSectionCategory(); // 🔥 YAHI ADD KARNA HAI
-  loadCategoryFilter(); // 🔥 ADD THIS LINE
+ 
 }
 if (pageId === 'pageTableStatus') {
   loadRestaurantInfo();
@@ -8083,11 +8083,11 @@ function getMOQ(item){
 
   return colorCount * variantCount;
 }
-async function loadSectionCategory() {
+  async function loadSectionCategory() {
   try {
-    const res = await apiGet("categoryMap"); // ✅ FIXED
+    const res = await apiGet("categoryMap");
 
-    window.sectionCategoryMap = res.data || {}; // ✅ FIXED
+    window.sectionCategoryMap = res.data || {};
 
     console.log("CategoryMap Loaded:", window.sectionCategoryMap);
 
@@ -8099,6 +8099,8 @@ async function loadSectionCategory() {
           `<option value="${sec}">${sec}</option>`
         ).join("");
     }
+
+    loadCategoryFilter(); // 🔥🔥🔥 ADD THIS LINE
 
   } catch (err) {
     console.error("Section load error:", err);
