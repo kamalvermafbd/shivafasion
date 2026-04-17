@@ -8073,18 +8073,19 @@ function getMOQ(item){
 
   return colorCount * variantCount;
 }
-
 async function loadSectionCategory() {
   try {
-    const map = await apiGet("getSectionCategoryMap");
+    const res = await apiGet("categoryMap"); // ✅ FIXED
 
-    window.sectionCategoryMap = map || {};
+    window.sectionCategoryMap = res.data || {}; // ✅ FIXED
+
+    console.log("CategoryMap Loaded:", window.sectionCategoryMap);
 
     const sectionEl = document.getElementById("newItemSection");
 
     if(sectionEl){
       sectionEl.innerHTML = `<option value="">Select Section</option>` +
-        Object.keys(map).map(sec =>
+        Object.keys(window.sectionCategoryMap).map(sec =>
           `<option value="${sec}">${sec}</option>`
         ).join("");
     }
