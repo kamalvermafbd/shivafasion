@@ -1241,10 +1241,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 <div class="form-row">
   <label>Section</label>
   <select id="newItemSection" onchange="loadCategoryDropdown()">
-    <option value="">Select Section</option>
-    <option value="Men">Men</option>
-    <option value="Women">Women</option>
-    <option value="Kids">Kids</option>
+   <option value="">Loading...</option>
   </select>
 </div>
       <div class="form-row">
@@ -1619,6 +1616,7 @@ if (pageId === 'pageMenu') {
    loadRestaurantInfo(); // 🔥 IMPORTANT FIX
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
+  loadSectionCategory(); // 🔥 YAHI ADD KARNA HAI
 }
 if (pageId === 'pageTableStatus') {
   loadRestaurantInfo();
