@@ -8260,7 +8260,24 @@ function toggleEditColorDropdown(){
   if(selected) select.value = selected;
 }
 
+function loadColorDropdown(){
 
+  const container = document.getElementById("newItemColors");
+
+  if(!container) return;
+
+  const allColors = window.colorList || [];
+
+  container.innerHTML = allColors.map(color => `
+    <label>
+      <input type="checkbox" value="${color}">
+      ${color}
+    </label>
+  `).join("");
+
+  document.getElementById("colorDropdownBtn").innerText =
+    "Select Colors ▼";
+}
   function loadEditColorDropdown(selectedColors){
 
   const container = document.getElementById("editItemColors");
@@ -8500,7 +8517,7 @@ if(colorBox){
   // 🔥 NEW
   loadProductMasters();
 loadSectionCategory();   // 🔥 ADD THIS
-  
+  loadColorDropdown(); // 🔥 ADD THIS LINE
   document.getElementById("createItemModal")
     .classList.add("active");
 }
