@@ -8190,7 +8190,8 @@ document.getElementById("menuSearch")
  function openManageItem(index){
 
   const item = window.menuData[index];
-
+console.log("ITEM GSM:", item.GSM);
+console.log("ITEM COLORS:", item.Colors);
   // 🔥 modal open
   document.getElementById("createItemModal").classList.add("active");
 
@@ -8218,11 +8219,16 @@ document.getElementById("menuSearch")
       document.getElementById("newItemCategory").value = item.Category || "";
     }, 200);
 
-    document.getElementById("newItemGSM").value = item.GSM || "";
-
+    document.getElementById("newItemGSM").value =
+  (item.GSM || "").trim();
+    console.log(
+  "AFTER SET GSM:",
+  document.getElementById("newItemGSM").value
+);
     // 🔥 COLORS FIX
     setTimeout(() => {
       setSelectedColors(item.Colors);   // ✅ ADD THIS
+      console.log("BEFORE SET COLORS:", item.Colors);
     }, 300);
 
   }, 200);
@@ -8232,17 +8238,25 @@ document.getElementById("menuSearch")
   document.getElementById("createItemBtn").innerText = "Update Item";
 }
 
-  function setSelectedColors(colorStr){
+  function setSelectedColors(colorsString){
 
-  if(!colorStr) return;
+  if(!colorsString) return;
 
-  const selected = colorStr.split(",").map(c => c.trim());
+  const selected = colorsString
+    .split(",")
+    .map(c => c.trim().toLowerCase()); // 🔥 normalize
 
-  document.querySelectorAll("#newItemColors input").forEach(cb => {
-    cb.checked = selected.includes(cb.value);
-  });
+  document.querySelectorAll("#newItemColors input")
+    .forEach(cb => {
+      cb.checked = selected.includes(cb.value.toLowerCase());
+    });
 
-  updateColorDropdownText();
+  document.getElementById("colorDropdownBtn").innerText =
+    selected.join(", ") + " ▼";
+    console.log(
+  "SELECTED CHECKBOX:",
+  [...document.querySelectorAll("#newItemColors input:checked")].map(c => c.value)
+);
 }
   
 
