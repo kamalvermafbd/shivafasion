@@ -8074,7 +8074,9 @@ function loadCategoryFilterBySection(){
       apiGet("getGSMMaster"),
       apiGet("getColorMaster")
     ]);
-
+console.log("GSM API:", gsmList);
+console.log("COLOR API:", colorList);
+    
     const gsmEl =
   document.getElementById("editItemGSM") ||
   document.getElementById("newItemGSM");
@@ -8085,7 +8087,8 @@ function loadCategoryFilterBySection(){
           `<option value="${g}">${g}</option>`
         ).join("");
     }
-
+console.log("GSM ELEMENT FOUND:", !!gsmEl);
+console.log("GSM OPTIONS:", [...gsmEl.options].map(o => o.value));
     const colorBox =
   document.getElementById("editItemColors") ||
   document.getElementById("newItemColors");
@@ -8113,7 +8116,11 @@ function loadCategoryFilterBySection(){
           <span>${c.Color}</span>
         </label>
       `).join("");
-
+console.log("COLOR ELEMENT FOUND:", !!colorBox);
+console.log(
+  "COLOR CHECKBOX VALUES:",
+  [...document.querySelectorAll("#newItemColors input")].map(c => c.value)
+);
       const btn =
   document.getElementById("editColorDropdownBtn") ||
   document.getElementById("colorDropdownBtn");
@@ -8121,6 +8128,7 @@ function loadCategoryFilterBySection(){
 if(btn){
   btn.innerText = "Select Colors ▼";
 }
+      console.log("COLOR BUTTON FOUND:", !!btn);
     }
 
   } catch (err) {
