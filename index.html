@@ -2907,9 +2907,8 @@ if(nav) nav.style.display = "none";
 }
 
 function closeManageItem(){
-  document.getElementById("manageItemModal").style.display = "none";
+  document.getElementById("manageItemModal").classList.remove("active");
 }
-  
 
 function clearManageFields(){
 
@@ -8353,18 +8352,25 @@ document.getElementById("menuSearch")
     </div>
   `;
 
-  document.getElementById("manageItemModal").classList.add("active");
+document.getElementById("manageItemModal").style.display = "flex";
 
   // 🔥 dropdown load
   loadEditSectionDropdown(item.Section);
   loadEditGSMDropdown(item.GSM);
 
-  setTimeout(() => {
-    loadEditCategoryDropdown(item.Category);
-    loadEditColorDropdown(item.Colors); // 🔥 IMPORTANT
-  }, 200);
+ setTimeout(() => {
+  loadEditCategoryDropdown(item.Category);
+  loadEditColorDropdown(item.Colors);
+
+  updateEditColorButton(); // 🔥 ADD THIS
+}, 200);
 }
 
+function toggleEditColorDropdown(){
+  const box = document.getElementById("editItemColors");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+}
+  
   function loadEditSectionDropdown(selected){
 
   const select = document.getElementById("editItemSection");
@@ -8377,7 +8383,7 @@ document.getElementById("menuSearch")
   if(selected) select.value = selected;
 }
 
-  function loadEditCategoryDropdown(selected){
+ function loadEditCategoryDropdown(selected){
 
   const section = document.getElementById("editItemSection").value;
   const select = document.getElementById("editItemCategory");
@@ -8387,7 +8393,9 @@ document.getElementById("menuSearch")
   select.innerHTML = `<option value="">Select Category</option>` +
     cats.map(c => `<option value="${c}">${c}</option>`).join("");
 
-  if(selected) select.value = selected;
+  if(selected){
+    select.value = selected;
+  }
 }
 
   function loadEditGSMDropdown(selected){
@@ -8401,6 +8409,43 @@ document.getElementById("menuSearch")
 
   if(selected) select.value = selected;
 }
+
+
+  function loadEditColorDropdown(selectedColors){
+
+  const container = document.getElementById("editItemColors");
+
+  const allColors = window.colorList || [];
+
+  const selected = (selectedColors || "").split(",").map(c => c.trim());
+
+  container.innerHTML = allColors.map(color => `
+  <label>
+    <input type="checkbox"
+      value="${color}"
+      ${selected.includes(color) ? "checked" : ""}
+      onchange="updateEditColorButton()">
+    ${color}
+  </label>
+`).join("");
+}
+
+  function updateEditColorButton(){
+
+  const selected = getEditSelectedColors();
+
+  const btn = document.getElementById("editColorDropdownBtn");
+
+  btn.innerText = selected ? selected + " ▼" : "Select Colors ▼";
+}
+
+  function getEditSelectedColors(){
+
+  const checks = document.querySelectorAll("#editItemColors input:checked");
+
+  return [...checks].map(c => c.value).join(", ");
+}
+  
 function saveItemChanges(index){
 
   const updatedData = {
