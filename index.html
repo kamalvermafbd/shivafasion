@@ -1225,16 +1225,18 @@ td:nth-child(8) { width: 220px; } /* Action */
     <div class="menu-toolbar">
 
   <!-- 🔥 SECTION -->
-  <select id="sectionFilter" onchange="loadCategoryFilterBySection()">
+  <select id="sectionFilter" onchange="loadCategoryFilterBySection(); applyMenuFilter();">
     <option value="">All Sections</option>
   </select>
 
   <!-- 🔥 CATEGORY -->
-  <select id="categoryFilter">
+ <select id="categoryFilter" onchange="applyMenuFilter()">
     <option value="">All Categories</option>
   </select>
 
-  <input type="text" id="menuSearch" placeholder="Search menu item...">
+<input type="text" id="menuSearch" 
+       placeholder="Search menu item..." 
+       oninput="applyMenuFilter()">
 
   <button onclick="clearMenuSearch()">Clear</button>
 
@@ -1629,9 +1631,11 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 
 if (pageId === 'pageMenu') {
    loadRestaurantInfo(); // 🔥 IMPORTANT FIX
+  // 🔥 FIRST: category map load
+  loadSectionCategory();
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
-  loadSectionCategory(); // 🔥 YAHI ADD KARNA HAI
+  
  
 }
 if (pageId === 'pageTableStatus') {
@@ -8107,7 +8111,7 @@ function getMOQ(item){
     }
 loadSectionFilter();
 loadCategoryFilterBySection();
-
+applyMenuFilter();
   } catch (err) {
     console.error("Section load error:", err);
   }
@@ -8220,6 +8224,38 @@ function toggleColorDropdown(){
   list.style.display =
     list.style.display === "block" ? "none" : "block";
 }
+
+  document.getElementById("sectionFilter")
+  .addEventListener("change", applyMenuFilter);
+
+document.getElementById("categoryFilter")
+  .addEventListener("change", applyMenuFilter);
+
+document.getElementById("menuSearch")
+  .addEventListener("input", applyMenuFilter);
+  function applyMenuFilter(){
+
+  const section = (document.getElementById("sectionFilter").value || "").trim();
+  const category = (document.getElementById("categoryFilter").value || "").trim();
+  const search = document.getElementById("menuSearch").value.toLowerCase();
+
+  const rows = document.querySelectorAll("#menuTable tr[id^='row-']");
+
+  rows.forEach(row => {
+
+    const rowSection = (row.getAttribute("data-section") || "").trim();
+    const rowCategory = (row.getAttribute("data-category") || "").trim();
+    const name = row.innerText.toLowerCase();
+
+    let show = true;
+
+    if(section && rowSection !== section) show = false;
+    if(category && rowCategory !== category) show = false;
+    if(search && !name.includes(search)) show = false;
+
+    row.style.display = show ? "" : "none";
+  });
+}
   
 function loadMenuData() {
     if (!document.querySelector('.nav-btn[data-page="pageMenu"]').classList.contains('active')) return;
@@ -8229,7 +8265,6 @@ function loadMenuData() {
 
   // 🔥 NEW — Screen Lock
   showScreenLock("Loading menu... Please wait");
-
   menuDiv.textContent = 'Loading menu...';
 
   function esc(s) {
@@ -8260,22 +8295,7 @@ data.forEach((item, i) => {
     menuDiv.textContent = 'No menu items found';
     return;
   }
-
 let html = `
-<div class="menu-toolbar">
-
-  <select id="menuCategoryFilter" onchange="filterMenu()">
-    <option value="">All Categories</option>
-  </select>
-
-  <input type="text" id="menuSearch"
-    placeholder="Search menu item..."
-    oninput="filterMenu()">
-
-  <button onclick="clearMenuFilter()">Clear</button>
-
-</div>
-
 <div style="
   display:inline-block;
   max-height: 500px;
@@ -8314,7 +8334,10 @@ style="border-collapse:collapse;">
     imgSrc = cacheUrl(imgSrc);
 
     html += `
-<tr id="row-${index}" data-category="${esc(item["Category"])}">
+<tr id="row-${index}" 
+    data-category="${esc(item["Category"])}"
+    data-section="${esc(item["Section"])}">
+      
   <td>${index + 1}</td>
 
  <td style="vertical-align:top;line-height:1.6;">
@@ -8349,9 +8372,6 @@ style="border-collapse:collapse;">
     <img src="${imgSrc}" 
          style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
   </td>
-
-
-
   <td>
     <button 
   style="background:#007bff;color:#fff;padding:5px 10px;border-radius:5px;"
@@ -8367,14 +8387,11 @@ style="border-collapse:collapse;">
 html += '<br><button onclick="openCreateItemModal()">➕ Add New Record</button>';
 
   menuDiv.innerHTML = html;
-
+// 🔥 ADD THIS
+applyMenuFilter();
    const cats = [...new Set(data.map(i => i["Category"]).filter(Boolean))];
 
-const cat = document.getElementById("menuCategoryFilter");
-if(cat){
-  cat.innerHTML = `<option value="">All Categories</option>` +
-    cats.map(c => `<option value="${c}">${c}</option>`).join("");
-}  
+ 
   
   menuDiv.innerHTML += `<datalist id="cat-list"></datalist>`;
 
