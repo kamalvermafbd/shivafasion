@@ -2913,8 +2913,17 @@ function closeManageItem(){
   
 async function openManageItem(index){
 
+  // 🔥 FIRST SET MODE (IMPORTANT)
+  window.itemMode = "edit";
+  window.editIndex = index;
+
   const item = window.menuData[index];
 resetCreateItemForm(); // 🔥 ADD THIS
+
+  // 🔥 FORCE AGAIN (SAFE)
+  window.itemMode = "edit";
+  window.editIndex = index;
+  
   document.getElementById("createItemModal").classList.add("active");
 
   // 🔥 1. LOAD MASTER (await already hai)
@@ -2932,9 +2941,6 @@ resetCreateItemForm(); // 🔥 ADD THIS
   setSelectedColors(item.Colors);
 
   console.log("✅ FINAL APPLY DONE");
-// 🔥 👉 YAHAN ADD KARNA HAI
-window.itemMode = "edit";
-  window.editIndex = index;
 
   // 🔥 BUTTON TEXT
   document.getElementById("createItemBtn").innerText = "Update Item";
