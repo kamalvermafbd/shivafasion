@@ -2733,56 +2733,42 @@ function stopBarcodeScanner() {
 }
 
 
-  
-function openManageItem(index){
+  async function openManageItem(index){
 
   const item = window.menuData[index];
 
-  // 🔥 open same create modal
+  console.log("ITEM GSM:", item.GSM);
+  console.log("ITEM COLORS:", item.Colors);
+
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 SET EDIT MODE
-  window.editIndex = index;
-  document.getElementById("createItemBtn").innerText = "Update Item";
+  // 🔥 WAIT FOR API + UI RENDER
+  await loadProductMasters();
 
-  // 🔥 PREFILL DATA
-  document.getElementById("newItemName").value = item.Name || "";
-  document.getElementById("newItemFabric").value = item.Fabric || "";
-  document.getElementById("newItemDescription").value = item.Description || "";
-  document.getElementById("newItemImage").value = item["Image Url"] || "";
-  document.getElementById("newItemMOQ").value = item.MOQ || "";
+  // 🔥 अब बाकी सब
+  loadSectionCategory();
 
-  document.getElementById("newItemHot").checked =
-    String(item.Hotselling || "").toLowerCase() === "true";
-
-  document.getElementById("newItemCat2").value = item.Cat2 || "Single";
-
-  // 🔥 DROPDOWN FLOW
-  loadEditSectionDropdown();
+  document.getElementById("newItemSection").value = item.Section || "";
+  loadCategoryDropdown();
 
   setTimeout(() => {
+    document.getElementById("newItemCategory").value = item.Category || "";
+  }, 100);
 
-    document.getElementById("newItemSection").value = item.Section || "";
+  // ✅ अब options ready हैं
+  document.getElementById("newItemGSM").value =
+    (item.GSM || "").trim();
 
-    loadCategoryDropdown();
+  console.log("AFTER SET GSM:",
+    document.getElementById("newItemGSM").value
+  );
 
-    setTimeout(() => {
-      document.getElementById("newItemCategory").value = item.Category || "";
-    }, 150);
-
- 
-    // 🔥 COLORS
-    loadColorDropdown();
-
-   setTimeout(() => {
-      // ✅ GSM FIX
-  document.getElementById("newItemGSM").value = item.GSM || "";
+  // ✅ अब checkbox ready हैं
   setSelectedColors(item.Colors);
-}, 200);
 
-  }, 150);
+  window.editIndex = index;
+  document.getElementById("createItemBtn").innerText = "Update Item";
 }
-
 function closeManageItem(){
   document.getElementById("manageItemModal").classList.remove("active");
 }
