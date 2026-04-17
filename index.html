@@ -2734,8 +2734,6 @@ function stopBarcodeScanner() {
 
 
   
-let currentManageIndex = null;
-  
 function openManageItem(index){
 
   const item = window.menuData[index];
@@ -2772,14 +2770,15 @@ function openManageItem(index){
       document.getElementById("newItemCategory").value = item.Category || "";
     }, 150);
 
-    document.getElementById("newItemGSM").value = item.GSM || "";
-
+ 
     // 🔥 COLORS
     loadColorDropdown();
 
-    setTimeout(() => {
-      
-    }, 150);
+   setTimeout(() => {
+      // ✅ GSM FIX
+  document.getElementById("newItemGSM").value = item.GSM || "";
+  setSelectedColors(item.Colors);
+}, 200);
 
   }, 150);
 }
