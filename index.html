@@ -8721,23 +8721,27 @@ console.log("🚀 FINAL ID:", payload.itemId);
   
 }
 
-  
-async function updateItem(payload, btn){
+  async function updateItem(payload, btn){
+
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = "⏳ Updating...";
+  }
 
   try{
 
-    const res = await apiPost("updateMenuItem", payload);
+    const res = await apiPost("updateMenuItemNew", payload);
 
-    if(res.success){
+    if(res && res.success){
 
       alert("✅ Item updated");
 
       closeCreateItemModal();
-    await  loadMenuData();
+      await loadMenuData();
 
     } else {
 
-      alert("❌ " + (res.message || "Update failed"));
+      alert("❌ " + (res?.message || "Update failed"));
 
     }
 
@@ -8748,14 +8752,11 @@ async function updateItem(payload, btn){
 
   }
 
-  // 🔥 ✅ YE PART END ME LAGANA HAI
   if(btn){
     btn.disabled = false;
-
     btn.textContent = "Update Item";
   }
 }
-  
 function editRow(index) {
 
   // 🔥 Prevent editing another row while one is active
