@@ -8076,7 +8076,10 @@ function loadCategoryFilterBySection(){
       apiGet("getColorMaster")
     ]);
 
-    const gsmEl = document.getElementById("newItemGSM");
+    const gsmEl =
+  document.getElementById("editItemGSM") ||
+  document.getElementById("newItemGSM");
+    
     if (gsmEl) {
       gsmEl.innerHTML = `<option value="">Select GSM</option>` +
         (gsmList || []).map(g =>
@@ -8084,7 +8087,10 @@ function loadCategoryFilterBySection(){
         ).join("");
     }
 
-    const colorBox = document.getElementById("newItemColors");
+    const colorBox =
+  document.getElementById("editItemColors") ||
+  document.getElementById("newItemColors");
+    
     if (colorBox) {
       colorBox.innerHTML = (colorList || []).map(c => `
         <label style="
@@ -8109,8 +8115,13 @@ function loadCategoryFilterBySection(){
         </label>
       `).join("");
 
-      document.getElementById("colorDropdownBtn").innerText =
-  "Select Colors ▼";
+      const btn =
+  document.getElementById("editColorDropdownBtn") ||
+  document.getElementById("colorDropdownBtn");
+
+if(btn){
+  btn.innerText = "Select Colors ▼";
+}
     }
 
   } catch (err) {
@@ -8169,14 +8180,14 @@ document.getElementById("menuSearch")
   });
 }
 
-  function openManageItem(index){
+ function openManageItem(index){
 
   const item = window.menuData[index];
 
-  // 🔥 create modal open करो
+  // 🔥 modal open
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 values fill करो
+  // 🔥 values
   document.getElementById("newItemName").value = item.Name || "";
   document.getElementById("newItemFabric").value = item.Fabric || "";
   document.getElementById("newItemDescription").value = item.Description || "";
@@ -8185,10 +8196,14 @@ document.getElementById("menuSearch")
   document.getElementById("newItemHot").checked = item.Hotselling === "TRUE";
   document.getElementById("newItemCat2").value = item.Cat2 || "Single";
 
-  // 🔥 dropdown load same API से
-  loadEditSectionDropdown();
+  // 🔥 सही function
+  loadSectionCategory();   // ✅ CHANGE 1
+
+  // 🔥 masters load (GSM + colors)
+  loadProductMasters();    // ✅ ADD THIS
 
   setTimeout(() => {
+
     document.getElementById("newItemSection").value = item.Section || "";
     loadCategoryDropdown();
 
@@ -8198,19 +8213,31 @@ document.getElementById("menuSearch")
 
     document.getElementById("newItemGSM").value = item.GSM || "";
 
-    // 🔥 colors
-    loadColorDropdown();
+    // 🔥 COLORS FIX
     setTimeout(() => {
-      
-    }, 200);
+      setSelectedColors(item.Colors);   // ✅ ADD THIS
+    }, 300);
 
   }, 200);
 
-  // 🔥 mode flag
- window.editIndex = index;
-document.getElementById("createItemBtn").innerText = "Update Item";
-    
+  // 🔥 edit mode
+  window.editIndex = index;
+  document.getElementById("createItemBtn").innerText = "Update Item";
 }
+
+  function setSelectedColors(colorStr){
+
+  if(!colorStr) return;
+
+  const selected = colorStr.split(",").map(c => c.trim());
+
+  document.querySelectorAll("#newItemColors input").forEach(cb => {
+    cb.checked = selected.includes(cb.value);
+  });
+
+  updateColorDropdownText();
+}
+  
 
 function toggleEditColorDropdown(){
   const box = document.getElementById("editItemColors");
