@@ -2732,34 +2732,43 @@ function stopBarcodeScanner() {
   video.style.display = "none";
 }
 
-
 async function openManageItem(index){
 
   const item = window.menuData[index];
 
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 FIRST: load masters
+  // 🔥 1. ONLY ONCE LOAD
   await loadProductMasters();
 
-  // 🔥 THEN: load section/category
-  loadSectionCategory();
+  // ❌ REMOVE THIS LINE
+  // loadSectionCategory();
 
+  // 🔥 2. BASIC FIELDS
   document.getElementById("newItemSection").value = item.Section || "";
+
+  // 🔥 CATEGORY LOAD
   loadCategoryDropdown();
 
   document.getElementById("newItemCategory").value = item.Category || "";
 
-  // ✅ अब safe है
-  document.getElementById("newItemGSM").value =
-    (item.GSM || "").trim();
+  // 🔥 3. IMPORTANT: DELAY SET (AFTER ALL RENDER)
+  setTimeout(() => {
 
-  setSelectedColors(item.Colors);
+    // GSM
+    document.getElementById("newItemGSM").value =
+      (item.GSM || "").trim();
+
+    // COLORS
+    setSelectedColors(item.Colors);
+
+    console.log("✅ FINAL APPLY DONE");
+
+  }, 100);
 
   window.editIndex = index;
   document.getElementById("createItemBtn").innerText = "Update Item";
 }
-
   
 function closeManageItem(){
   document.getElementById("manageItemModal").classList.remove("active");
