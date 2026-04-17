@@ -8871,14 +8871,11 @@ const colors = [...document.querySelectorAll("#newItemColors input:checked")]
   MOQ: moq,
   Colors: colors,
   Description: description,
-  ImageUrl: imageUrl,
+  "Image Url": imageUrl,
   Hotselling: hot,
   Cat2: cat2
 };
 
-  if(!imageUrl){
-  delete payload.ImageUrl;
-}
 // 🔥 FINAL MODE SWITCH
   if(window.itemMode === "edit"){
 
@@ -9161,68 +9158,7 @@ if (addBtn) addBtn.disabled = false;
 }
 
 
-function addNewRecord() {
-  const menuDiv = document.getElementById('menuTable');
-  const existingForm = document.getElementById('newRecordRow');
-  if (existingForm) return alert('🟡 New record form already open!');
 
-  const table = menuDiv.querySelector('table');
-  if (!table) return;
-
-  let options = CATEGORY_OPTIONS
-    .map(c => `<option value="${c}">${c}</option>`)
-    .join("");
-
-  const newRow = document.createElement('tr');
-  newRow.id = 'newRecordRow';
-
-  newRow.innerHTML = `
-    <td>New</td>
-    <td><input type="text" placeholder="Name"></td>
-
-    <td>
-      <select id="new-cat" style="width:100%">
-        ${options}
-      </select>
-    </td>
-
-    <td><input type="text" placeholder="Description"></td>
-    <td><input type="text" placeholder="Hold"></td>
-    <td><input type="text" placeholder="Price"></td>
-
-    <td class="upload-cell">
-      <input class="no-save" type="file" id="file-input-new" style="display:none"
-        onchange="uploadImage(this, 'new')">
-
-      <button type="button"
-        onclick="document.getElementById('file-input-new').click()">
-        Upload Image
-      </button>
-
-      <span id="img-url-new" style="font-size:12px;color:#007bff;margin-left:6px;"></span>
-
-      <input type="text" placeholder="Image Url" id="img-input-new"
-             style="width:100%;margin-top:4px;">
-    </td>
-
-    <td>
-  <input type="checkbox" id="new-hotselling">
-</td>
-
-    <td><input type="text" placeholder="Opening"></td>
-
-    <td>—</td><td>—</td><td>—</td>
-
-    <td>
-      <button onclick="saveNewRecord()">💾 Save</button>
-      <button onclick="cancelNewRecord()">❌ Cancel</button>
-    </td>
-  `;
-
-  table.appendChild(newRow);
-  document.getElementById("addNewBtn").disabled = false;
-
-}
 
 
 function cancelNewRecord() {
@@ -9236,53 +9172,6 @@ function cancelNewRecord() {
   // Safely enable Add New button only if it exists
   const addBtn = document.getElementById("addNewBtn");
   if (addBtn) addBtn.disabled = false;
-}
-
-function saveNewRecord() {
-  const row = document.getElementById('newRecordRow');
-  if (!row) return;
-
-  showScreenLock("Saving new record...");
-
-  const newData = {
-    Name: row.querySelector('td:nth-child(2) input').value.trim(),
-    Category: document.getElementById("new-cat").value.trim(),
-    Description: row.querySelector('td:nth-child(4) input').value.trim(),
-    Hold: row.querySelector('td:nth-child(5) input').value.trim(),
-    Price: row.querySelector('td:nth-child(6) input').value.trim(),
-    "Image Url": row.querySelector('#img-input-new').value.trim(),
-    Hotselling: document.getElementById("new-hotselling").checked ? "TRUE" : "",
-
-    
-    Opening: row.querySelector('td:nth-child(9) input').value.trim()
-  };
-
-  // Mandatory Name
-  if (!newData.Name) {
-    hideScreenLock();
-    return alert("⚠️ Please enter a Name.");
-  }
-
-  // VALID Category
-  if (!CATEGORY_OPTIONS.includes(newData.Category)) {
-    hideScreenLock();
-    return alert("⚠️ Invalid Category! Select only from dropdown.");
-  }
-
-  const span = document.getElementById('img-url-new');
-  if (span?.dataset?.url) newData["Image Url"] = span.dataset.url.trim();
-
-  google.script.run
-    .withSuccessHandler(() => {
-      hideScreenLock();
-      alert("✅ New record added successfully!");
-      loadMenuData();
-    })
-    .withFailureHandler((err) => {
-      hideScreenLock();
-      alert("Error saving new record: " + err);
-    })
-    .addMenuRecord(newData);
 }
 
 
