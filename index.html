@@ -8216,10 +8216,15 @@ function toggleEditColorDropdown(){
   const box = document.getElementById("editItemColors");
   box.style.display = box.style.display === "none" ? "block" : "none";
 }
+
   
   function loadEditSectionDropdown(selected){
 
-  const select = document.getElementById("editItemSection");
+  const select =
+    document.getElementById("editItemSection") ||
+    document.getElementById("newItemSection");   // 🔥 fallback
+
+  if(!select) return;
 
   const sections = Object.keys(window.sectionCategoryMap || {});
 
@@ -8228,7 +8233,6 @@ function toggleEditColorDropdown(){
 
   if(selected) select.value = selected;
 }
-
  function loadEditCategoryDropdown(selected){
 
   const section = document.getElementById("editItemSection").value;
