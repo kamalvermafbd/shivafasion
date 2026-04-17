@@ -2735,6 +2735,26 @@ function stopBarcodeScanner() {
   video.style.display = "none";
 }
 
+
+function openUpdateModal(index){
+
+  const item = window.menuData[index];
+
+  // 🔥 store current item id
+  window.currentEditId = item.itemId;
+
+  // 🔥 open modal
+  document.getElementById("updateItemModal").classList.add("active");
+
+  // 🔥 fill fields
+  document.getElementById("updateName").value = item.Name || "";
+  document.getElementById("updateSection").value = item.Section || "";
+  document.getElementById("updateCategory").value = item.Category || "";
+
+  console.log("✅ Update modal opened for:", item.itemId);
+}
+
+  
 let currentManageIndex = null;
   
 function openManageMenu(index){
@@ -8671,7 +8691,7 @@ style="border-collapse:collapse;">
      <!-- 🟢 ITEM -->
   <button 
     style="background:#28a745;color:#fff;padding:5px 8px;border-radius:5px;font-size:12px;"
-    onclick="openManageItem(${index})">
+    onclick="openUpdateModal(${index})">
     ✏️ Manage Item
   </button>
   
