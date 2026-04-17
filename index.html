@@ -2731,42 +2731,31 @@ function stopBarcodeScanner() {
   video.srcObject = null;
   video.style.display = "none";
 }
-
 async function openManageItem(index){
 
   const item = window.menuData[index];
 
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 1. ONLY ONCE LOAD
+  // 🔥 1. LOAD MASTER (await already hai)
   await loadProductMasters();
 
-  // ❌ REMOVE THIS LINE
-  // loadSectionCategory();
-
-  // 🔥 2. BASIC FIELDS
+  // 🔥 2. SECTION + CATEGORY
   document.getElementById("newItemSection").value = item.Section || "";
-
-  // 🔥 CATEGORY LOAD
   loadCategoryDropdown();
-
   document.getElementById("newItemCategory").value = item.Category || "";
 
-  // 🔥 3. IMPORTANT: DELAY SET (AFTER ALL RENDER)
-  setTimeout(() => {
+  // 🔥 3. DIRECT SET (NO TIMEOUT)
+  document.getElementById("newItemGSM").value =
+    (item.GSM || "").trim();
 
-    // GSM
-    document.getElementById("newItemGSM").value =
-      (item.GSM || "").trim();
+  setSelectedColors(item.Colors);
 
-    // COLORS
-    setSelectedColors(item.Colors);
-
-    console.log("✅ FINAL APPLY DONE");
-
-  }, 100);
+  console.log("✅ FINAL APPLY DONE");
 
   window.editIndex = index;
+
+  // 🔥 BUTTON TEXT
   document.getElementById("createItemBtn").innerText = "Update Item";
 }
   
@@ -8602,6 +8591,7 @@ function resetCreateItemForm(){
  document.getElementById("newItemHot").checked = false;
   document.getElementById("newItemCat2").value = "Single";
 }
+  
 function prepareNewItemForManage(payload){
   console.log("STEP1 before pending:", payload);
   console.log("STEP1 section DOM:", document.getElementById("newItemSection")?.value);
@@ -8717,17 +8707,50 @@ if(duplicate){
 };
 
 if(window.editIndex !== undefined){
-  payload.index = window.editIndex;
+  payload.itemId = window.menuData[window.editIndex].itemId;
   updateItem(payload);   // 🔥 edit mode
 } else {
   prepareNewItemForManage(payload); // 🔥 create mode
 }
 
-  closeCreateItemModal();
   
 }
-  
 
+  
+async function updateItem(payload, btn){
+
+  try{
+
+    const res = await apiPost("updateMenuItem", payload);
+
+    if(res.success){
+
+      alert("✅ Item updated");
+
+      closeCreateItemModal();
+    await  loadMenuData();
+
+    } else {
+
+      alert("❌ " + (res.message || "Update failed"));
+
+    }
+
+  } catch(err){
+
+    console.error(err);
+    alert("❌ API error");
+
+  }
+
+  // 🔥 ✅ YE PART END ME LAGANA HAI
+  if(btn){
+    btn.disabled = false;
+
+    btn.textContent = "Update Item";
+  }
+}
+  
 function editRow(index) {
 
   // 🔥 Prevent editing another row while one is active
