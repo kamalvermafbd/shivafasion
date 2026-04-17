@@ -2817,8 +2817,8 @@ async function openUpdateModal(index){
   document.getElementById("updateColorBtn").innerText = "Loading...";
 
   // 🔥 load masters (reuse same functions)
-  await loadProductMasters();   // already hai tere paas
-
+ await loadUpdateMasters(); ✅
+  
   // 🔥 fill fields
   document.getElementById("updateName").value = item.Name || "";
 
@@ -8377,6 +8377,78 @@ function loadCategoryFilterBySection(){
 }
 
   
+  
+  async function loadProductMasters() {
+  try {
+    const [gsmList, colorList] = await Promise.all([
+      apiGet("getGSMMaster"),
+      apiGet("getColorMaster")
+    ]);
+console.log("GSM API:", gsmList);
+console.log("COLOR API:", colorList);
+    
+    const gsmEl =
+  document.getElementById("editItemGSM") ||
+  document.getElementById("newItemGSM");
+    
+    if (gsmEl) {
+      gsmEl.innerHTML = `<option value="">Select GSM</option>` +
+        (gsmList || []).map(g =>
+          `<option value="${g}">${g}</option>`
+        ).join("");
+    }
+console.log("GSM ELEMENT FOUND:", !!gsmEl);
+console.log("GSM OPTIONS:", [...gsmEl.options].map(o => o.value));
+    const colorBox =
+  document.getElementById("editItemColors") ||
+  document.getElementById("newItemColors");
+    
+    if (colorBox) {
+      colorBox.innerHTML = (colorList || []).map(c => `
+        <label style="
+          display:flex;
+          align-items:center;
+          gap:8px;
+          margin-bottom:6px;
+          font-size:13px;
+          cursor:pointer;
+        ">
+         <input type="checkbox" value="${c.Color}" onchange="updateColorDropdownText()">
+          <span style="
+            width:14px;
+            height:14px;
+            border-radius:3px;
+            border:1px solid #ccc;
+            background:${c.Hex};
+            display:inline-block;
+          "></span>
+
+          <span>${c.Color}</span>
+        </label>
+      `).join("");
+console.log("COLOR ELEMENT FOUND:", !!colorBox);
+console.log(
+  "COLOR CHECKBOX VALUES:",
+  [...document.querySelectorAll("#newItemColors input")].map(c => c.value)
+);
+      const btn =
+  document.getElementById("editColorDropdownBtn") ||
+  document.getElementById("colorDropdownBtn");
+
+if(btn){
+  btn.innerText = "Select Colors ▼";
+}
+      console.log("COLOR BUTTON FOUND:", !!btn);
+    }
+
+  } catch (err) {
+    console.error("Product master load error:", err);
+
+    const colorBox = document.getElementById("newItemColors");
+    if (colorBox) colorBox.innerHTML = "Failed to load colors";
+  }
+}
+
   
   async function loadProductMasters() {
   try {
