@@ -2775,7 +2775,7 @@ function openManageItem(index){
     document.getElementById("newItemGSM").value = item.GSM || "";
 
     // 🔥 COLORS
-    loadEditColorDropdown();
+    loadColorDropdown();
 
     setTimeout(() => {
       setSelectedColors(item.Colors);
@@ -8199,7 +8199,7 @@ document.getElementById("menuSearch")
     document.getElementById("newItemGSM").value = item.GSM || "";
 
     // 🔥 colors
-    loadEditColorDropdown();
+    loadColorDropdown();
     setTimeout(() => {
       setSelectedColors(item.Colors);
     }, 200);
@@ -8233,6 +8233,8 @@ function toggleEditColorDropdown(){
 
   if(selected) select.value = selected;
 }
+
+  
  function loadEditCategoryDropdown(selected){
 
   const section = document.getElementById("editItemSection").value;
@@ -8260,41 +8262,43 @@ function toggleEditColorDropdown(){
   if(selected) select.value = selected;
 }
 
-function loadColorDropdown(){
+function loadColorDropdown(selectedColors){
 
-  const container = document.getElementById("newItemColors");
+  const container =
+    document.getElementById("editItemColors") ||
+    document.getElementById("newItemColors");
 
   if(!container) return;
 
   const allColors = window.colorList || [];
 
+  const selected = (selectedColors || "")
+    .split(",")
+    .map(c => c.trim());
+
   container.innerHTML = allColors.map(color => `
     <label>
-      <input type="checkbox" value="${color}">
+      <input type="checkbox"
+        value="${color}"
+        ${selected.includes(color) ? "checked" : ""}
+        onchange="updateColorButton()">
       ${color}
     </label>
   `).join("");
 
-  document.getElementById("colorDropdownBtn").innerText =
-    "Select Colors ▼";
+  updateColorButton();
 }
-  function loadEditColorDropdown(selectedColors){
+function updateColorButton(){
 
-  const container = document.getElementById("editItemColors");
+  const checks = document.querySelectorAll("#newItemColors input:checked");
 
-  const allColors = window.colorList || [];
+  const selected = [...checks].map(c => c.value).join(", ");
 
-  const selected = (selectedColors || "").split(",").map(c => c.trim());
+  const btn = document.getElementById("colorDropdownBtn");
 
-  container.innerHTML = allColors.map(color => `
-  <label>
-    <input type="checkbox"
-      value="${color}"
-      ${selected.includes(color) ? "checked" : ""}
-      onchange="updateEditColorButton()">
-    ${color}
-  </label>
-`).join("");
+  if(btn){
+    btn.innerText = selected ? selected + " ▼" : "Select Colors ▼";
+  }
 }
 
   function updateEditColorButton(){
