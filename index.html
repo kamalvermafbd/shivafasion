@@ -2775,7 +2775,7 @@ function openManageItem(index){
     document.getElementById("newItemGSM").value = item.GSM || "";
 
     // 🔥 COLORS
-    loadColorDropdown();
+    loadEditColorDropdown();
 
     setTimeout(() => {
       setSelectedColors(item.Colors);
@@ -8199,7 +8199,7 @@ document.getElementById("menuSearch")
     document.getElementById("newItemGSM").value = item.GSM || "";
 
     // 🔥 colors
-    loadColorDropdown();
+    loadEditColorDropdown();
     setTimeout(() => {
       setSelectedColors(item.Colors);
     }, 200);
