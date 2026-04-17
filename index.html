@@ -1354,6 +1354,20 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 </div>
 
+<!-- 🔥 MANAGE ITEM MODAL -->
+<div id="manageItemModal" class="modalitem-overlay">
+  <div class="manage-modal-box">
+    <h3>✏️ Manage Item</h3>
+
+    <div id="manageItemContent"></div>
+
+    <div style="text-align:right;margin-top:10px;">
+      <button onclick="closeManageItem()">Close</button>
+    </div>
+  </div>
+</div>
+
+      
 <div id="pageTableStatus" class="page" style="display:none;">
   <div class="container pos-full">
     <h2>Table Status</h2>
@@ -2891,6 +2905,11 @@ if(nav) nav.style.display = "none";
 
   }
 }
+
+function closeManageItem(){
+  document.getElementById("manageItemModal").style.display = "none";
+}
+  
 
 function clearManageFields(){
 
@@ -8272,6 +8291,62 @@ document.getElementById("menuSearch")
     row.style.display = show ? "" : "none";
   });
 }
+function openManageItem(index){
+
+  const item = window.menuData[index];
+
+  const modal = document.getElementById("manageItemModal");
+  const content = document.getElementById("manageItemContent");
+
+  content.innerHTML = `
+    <div class="form-row">
+      <label>Name</label>
+      <input id="editItemName" value="${item.Name || ""}">
+    </div>
+
+    <div class="form-row">
+      <label>Category</label>
+      <input id="editItemCategory" value="${item.Category || ""}">
+    </div>
+
+    <div class="form-row">
+      <label>Fabric</label>
+      <input id="editItemFabric" value="${item.Fabric || ""}">
+    </div>
+
+    <div class="form-row">
+      <label>GSM</label>
+      <input id="editItemGSM" value="${item.GSM || ""}">
+    </div>
+
+    <div class="form-row">
+      <label>Colors</label>
+      <input id="editItemColors" value="${item.Colors || ""}">
+    </div>
+
+    <button onclick="saveItemChanges(${index})"
+      style="margin-top:10px;background:#28a745;color:#fff;padding:6px 12px;border:none;border-radius:5px;">
+      Save
+    </button>
+  `;
+
+  modal.style.display = "block";
+}
+
+function saveItemChanges(index){
+
+  const updatedData = {
+    Name: document.getElementById("editItemName").value,
+    Category: document.getElementById("editItemCategory").value,
+    Fabric: document.getElementById("editItemFabric").value,
+    GSM: document.getElementById("editItemGSM").value,
+    Colors: document.getElementById("editItemColors").value
+  };
+
+  console.log("SAVE ITEM:", updatedData);
+
+  // 🔥 next step में API call करेंगे
+}
   
 function loadMenuData() {
     if (!document.querySelector('.nav-btn[data-page="pageMenu"]').classList.contains('active')) return;
@@ -8389,11 +8464,21 @@ style="border-collapse:collapse;">
          style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
   </td>
   <td>
+    
+     <!-- 🟢 ITEM -->
+  <button 
+    style="background:#28a745;color:#fff;padding:5px 8px;border-radius:5px;font-size:12px;"
+    onclick="openManageItem(${index})">
+    ✏️ Manage Item
+  </button>
+  
     <button 
   style="background:#007bff;color:#fff;padding:5px 10px;border-radius:5px;"
   onclick="openManageMenu(${index})">
-  ⚙️ Manage
+  ⚙️ Manage Variant
 </button>
+
+
   </td>
 </tr>
 `;
