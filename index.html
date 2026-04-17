@@ -1403,9 +1403,11 @@ td:nth-child(8) { width: 220px; } /* Action */
     <label>Colors</label>
 
     <div class="multi-select-dropdown">
-      <div id="updateColorBtn" class="multi-select-btn">
-        Loading colors...
-      </div>
+      <div id="updateColorBtn"
+     class="multi-select-btn"
+     onclick="toggleUpdateColorDropdown()">
+  Select Colors ▼
+</div>
 
       <div id="updateColors" class="multi-select-list" style="display:none;"></div>
     </div>
@@ -2801,7 +2803,6 @@ async function openUpdateModal(index){
   const modal = document.getElementById("updateItemModal");
   modal.classList.add("active");
 
-  // 🔥 store id
   window.currentEditId = item.itemId;
 
   // 🔥 loading state
@@ -2809,36 +2810,34 @@ async function openUpdateModal(index){
   document.getElementById("updateGSM").innerHTML = `<option>Loading...</option>`;
   document.getElementById("updateColorBtn").innerText = "Loading...";
 
-  // 🔥 load masters (reuse same functions)
- await loadUpdateMasters(); 
+  // 🔥 load masters
+  await loadUpdateMasters();
 
-  // 🔥 fill fields
+  // 🔥 fill basic
   document.getElementById("updateName").value = item.Name || "";
 
+  // 🔥 SECTION + CATEGORY FIX
   document.getElementById("updateSection").value = item.Section || "";
-  loadUpdateCategoryDropdown();
+  await loadUpdateCategoryDropdown();   // 🔥 FIX
   document.getElementById("updateCategory").value = item.Category || "";
 
+  // 🔥 GSM + COLORS
   document.getElementById("updateGSM").value = (item.GSM || "").trim();
-
   setUpdateSelectedColors(item.Colors);
 
   console.log("✅ Update modal ready");
 }
-
-
-  async function loadUpdateMasters(){
+  
+async function loadUpdateMasters(){
 
   try{
+
     const [gsmList, colorList] = await Promise.all([
       apiGet("getGSMMaster"),
       apiGet("getColorMaster")
     ]);
 
-    console.log("🔥 UPDATE GSM:", gsmList);
-    console.log("🔥 UPDATE COLORS:", colorList);
-
-    // 🔹 GSM DROPDOWN
+    // ✅ GSM
     const gsmEl = document.getElementById("updateGSM");
 
     if(gsmEl){
@@ -2849,52 +2848,81 @@ async function openUpdateModal(index){
         ).join("");
     }
 
-    // 🔹 COLORS
+    // ✅ COLORS
     const colorBox = document.getElementById("updateColors");
 
     if(colorBox){
       colorBox.innerHTML = (colorList || []).map(c => `
-        <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <input type="checkbox" value="${c.Color}" onchange="updateColorButtonText()">
-          <span style="width:14px;height:14px;background:${c.Hex};border:1px solid #ccc;"></span>
+        <label style="display:flex;gap:8px;margin-bottom:6px;">
+          <input type="checkbox"
+                 value="${c.Color}"
+                 onchange="updateUpdateColorText()">
           <span>${c.Color}</span>
         </label>
       `).join("");
-
-      // 🔹 toggle dropdown
-      const btn = document.getElementById("updateColorBtn");
-
-      if(btn){
-        btn.onclick = () => {
-          colorBox.style.display =
-            colorBox.style.display === "none" ? "block" : "none";
-        };
-
-        btn.innerText = "Select Colors ▼";
-      }
     }
 
-  }catch(err){
-    console.error("❌ Update master load error:", err);
+    // ✅ button reset
+    const btn = document.getElementById("updateColorBtn");
+    if(btn){
+      btn.innerText = "Select Colors ▼";
+    }
+
+    console.log("✅ Update masters loaded");
+
+  } catch(err){
+    console.error("Update master error:", err);
   }
 }
   
-  
-  function loadUpdateCategoryDropdown(){
+  function setUpdateSelectedColors(colorsString){
 
+  if(!colorsString) return;
+
+  const selected = colorsString
+    .split(",")
+    .map(c => c.trim().toLowerCase());
+
+  const checkboxes = document.querySelectorAll("#updateColors input");
+
+  checkboxes.forEach(cb => {
+    const val = cb.value.trim().toLowerCase();
+    cb.checked = selected.includes(val);
+  });
+
+  updateUpdateColorText(); // button text update
+}
+
+  function updateUpdateColorText(){
+
+  const selected = [...document.querySelectorAll("#updateColors input:checked")]
+    .map(el => el.value);
+
+  const btn = document.getElementById("updateColorBtn");
+
+  if(!btn) return;
+
+  btn.innerText = selected.length
+    ? selected.join(", ")
+    : "Select Colors ▼";
+}
+  
+  async function loadUpdateCategoryDropdown(){
   const section = document.getElementById("updateSection").value;
   const catEl = document.getElementById("updateCategory");
 
   if(!section || !window.sectionCategoryMap){
-    catEl.innerHTML = `<option>Select Category</option>`;
+    catEl.innerHTML = `<option value="">Select Category</option>`;
     return;
   }
 
   const categories = window.sectionCategoryMap[section] || [];
 
   catEl.innerHTML =
-    `<option>Select Category</option>` +
-    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+    `<option value="">Select Category</option>` +
+    categories.map(c =>
+      `<option value="${c}">${c}</option>`
+    ).join("");
 }
 
   function setUpdateSelectedColors(colors){
@@ -8568,20 +8596,26 @@ if(btn){
   }
 }
 
-function updateColorDropdownText(){
-  const checked = [...document.querySelectorAll('#newItemColors input:checked')]
+function updateUpdateColorText(){
+
+  const selected = [...document.querySelectorAll("#updateColors input:checked")]
     .map(el => el.value);
 
-  document.getElementById("colorDropdownBtn").textContent =
-    checked.length ? checked.join(", ") : "Select Colors ▼";
+  const btn = document.getElementById("updateColorBtn");
+
+  if(!btn) return;
+
+  btn.innerText = selected.length
+    ? selected.join(", ")
+    : "Select Colors ▼";
 }
   
-function toggleColorDropdown(){
-  const list = document.getElementById("newItemColors");
-  if(!list) return;
+function toggleUpdateColorDropdown(){
+  const box = document.getElementById("updateColors");
+  if(!box) return;
 
-  list.style.display =
-    list.style.display === "block" ? "none" : "block";
+  box.style.display =
+    box.style.display === "none" ? "block" : "none";
 }
 
   document.getElementById("sectionFilter")
