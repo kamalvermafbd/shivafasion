@@ -2733,42 +2733,34 @@ function stopBarcodeScanner() {
 }
 
 
-  async function openManageItem(index){
+async function openManageItem(index){
 
   const item = window.menuData[index];
 
-  console.log("ITEM GSM:", item.GSM);
-  console.log("ITEM COLORS:", item.Colors);
-
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 WAIT FOR API + UI RENDER
+  // 🔥 FIRST: load masters
   await loadProductMasters();
 
-  // 🔥 अब बाकी सब
+  // 🔥 THEN: load section/category
   loadSectionCategory();
 
   document.getElementById("newItemSection").value = item.Section || "";
   loadCategoryDropdown();
 
-  setTimeout(() => {
-    document.getElementById("newItemCategory").value = item.Category || "";
-  }, 100);
+  document.getElementById("newItemCategory").value = item.Category || "";
 
-  // ✅ अब options ready हैं
+  // ✅ अब safe है
   document.getElementById("newItemGSM").value =
     (item.GSM || "").trim();
 
-  console.log("AFTER SET GSM:",
-    document.getElementById("newItemGSM").value
-  );
-
-  // ✅ अब checkbox ready हैं
   setSelectedColors(item.Colors);
 
   window.editIndex = index;
   document.getElementById("createItemBtn").innerText = "Update Item";
 }
+
+  
 function closeManageItem(){
   document.getElementById("manageItemModal").classList.remove("active");
 }
