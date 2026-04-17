@@ -1220,12 +1220,21 @@ td:nth-child(8) { width: 220px; } /* Action */
     <h2>Menu Management</h2>
     <p>Welcome Master! You can manage menu items here.</p>
     <!-- You can add a form or table later -->
-     <div id="menuTable"></div>
+   
 
+    <div class="menu-toolbar">
 
+  <select id="categoryFilter">
+    <option value="">All Categories</option>
+  </select>
 
+  <input type="text" id="menuSearch" placeholder="Search menu item...">
 
+  <button onclick="clearMenuSearch()">Clear</button>
 
+</div>
+    
+    <div id="menuTable"></div>
 <!-- 🔥 CREATE ITEM MODAL -->
 <div id="createItemModal" class="modalitem-overlay">
   <div class="manage-modal-box">
