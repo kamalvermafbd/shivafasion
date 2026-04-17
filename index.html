@@ -8065,6 +8065,27 @@ console.log("✅ API RESPONSE:", res);   // 🔥 NEW
 
   reader.readAsDataURL(file);
 }
+
+
+function getColorCount(item){
+  const colors = (item.Colors || "").split(",")
+    .map(c => c.trim())
+    .filter(Boolean);
+
+  return colors.length;
+}
+
+function getVariantCount(name){
+  return getVariantsByName(name).length;
+}
+
+function getMOQ(item){
+  const colorCount = getColorCount(item);
+  const variantCount = getVariantCount(item.Name);
+
+  return colorCount * variantCount;
+}
+  
   async function loadProductMasters() {
   try {
     const [gsmList, colorList] = await Promise.all([
@@ -8237,9 +8258,17 @@ style="border-collapse:collapse;">
   ${
     String(item["Cat2"] || "").toLowerCase() === "multi"
       ? `
-        <div style="font-size:12px;color:#666;margin-top:4px;">
-          Variant (${getVariantsByName(item["Name"]).length})
-        </div>
+       <div style="font-size:12px;color:#666;margin-top:4px;">
+  Variant (${getVariantCount(item["Name"])})
+</div>
+
+<div style="font-size:12px;color:#888;">
+  Colors (${getColorCount(item)})
+</div>
+
+<div style="font-size:12px;color:#0A7;font-weight:600;">
+  MOQ (${getMOQ(item)})
+</div>
 
         ${getVariantsByName(item["Name"]).map(v => `
           <div style="display:flex;gap:10px;font-size:13px;">
