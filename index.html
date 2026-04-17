@@ -8701,14 +8701,19 @@ if(duplicate){
   MOQ: moq,
   Colors: colors,
   Description: description,
-  "Image Url": imageUrl,
+  ImageUrl: imageUrl,
   Hotselling: hot,
   Cat2: cat2
 };
-
+if(!imageUrl){
+  delete payload.ImageUrl;   // ✅ ab kaam karega
+}
 if(window.editIndex !== undefined){
   payload.itemId = window.menuData[window.editIndex].itemId;
-  updateItem(payload);   // 🔥 edit mode
+  payload.itemId = Number(payload.itemId);
+console.log("🚀 FINAL ID:", payload.itemId);
+   updateItem(payload, btn);
+
 } else {
   prepareNewItemForManage(payload); // 🔥 create mode
 }
