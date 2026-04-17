@@ -8295,75 +8295,43 @@ document.getElementById("menuSearch")
 
   const item = window.menuData[index];
 
-  const box = document.getElementById("manageItemContent");
+  // 🔥 create modal open करो
+  document.getElementById("createItemModal").classList.add("active");
 
-  box.innerHTML = `
-    <div class="price-form">
+  // 🔥 values fill करो
+  document.getElementById("newItemName").value = item.Name || "";
+  document.getElementById("newItemFabric").value = item.Fabric || "";
+  document.getElementById("newItemDescription").value = item.Description || "";
+  document.getElementById("newItemImage").value = item["Image Url"] || "";
 
-      <div class="form-row">
-        <label>Name</label>
-        <input id="editItemName" type="text" value="${item.Name || ""}">
-      </div>
+  document.getElementById("newItemHot").checked = item.Hotselling === "TRUE";
+  document.getElementById("newItemCat2").value = item.Cat2 || "Single";
 
-      <div class="form-row">
-        <label>Section</label>
-        <select id="editItemSection" onchange="loadEditCategoryDropdown()"></select>
-      </div>
+  // 🔥 dropdown load same API से
+  loadSectionDropdown();
 
-      <div class="form-row">
-        <label>Category</label>
-        <select id="editItemCategory"></select>
-      </div>
+  setTimeout(() => {
+    document.getElementById("newItemSection").value = item.Section || "";
+    loadCategoryDropdown();
 
-      <div class="form-row">
-        <label>Fabric</label>
-        <input id="editItemFabric" type="text" value="${item.Fabric || ""}">
-      </div>
+    setTimeout(() => {
+      document.getElementById("newItemCategory").value = item.Category || "";
+    }, 200);
 
-      <div class="form-row">
-        <label>GSM</label>
-        <select id="editItemGSM"></select>
-      </div>
+    document.getElementById("newItemGSM").value = item.GSM || "";
 
-      <!-- 🔥 SAME COLOR UI -->
-      <div class="form-row color-row">
-        <label>Colors</label>
+    // 🔥 colors
+    loadColorDropdown();
+    setTimeout(() => {
+      setSelectedColors(item.Colors);
+    }, 200);
 
-        <div class="multi-select-dropdown">
+  }, 200);
 
-          <div id="editColorDropdownBtn"
-               class="multi-select-btn"
-               onclick="toggleEditColorDropdown()">
-            Select Colors ▼
-          </div>
-
-          <div id="editItemColors"
-               class="multi-select-list"
-               style="display:none;">
-          </div>
-
-        </div>
-      </div>
-
-      <div style="margin-top:10px;">
-        <button onclick="saveManageItem(${index})">Save</button>
-      </div>
-
-    </div>
-  `;
-
-document.getElementById("manageItemModal").style.display = "flex";
-
-  // 🔥 dropdown load
-  loadEditSectionDropdown(item.Section);
-  loadEditGSMDropdown(item.GSM);
-
- setTimeout(() => {
-  loadEditCategoryDropdown(item.Category);
-  loadEditColorDropdown(item.Colors);
-
-  updateEditColorButton(); // 🔥 ADD THIS
-}, 200);
+  // 🔥 mode flag
+ window.editIndex = index;
+document.getElementById("createItemBtn").innerText = "Update Item";
+    
 }
 
 function toggleEditColorDropdown(){
@@ -8669,6 +8637,14 @@ document.addEventListener("click", function(e){
 function closeCreateItemModal(){
   document.getElementById("createItemModal")
     .classList.remove("active");
+
+  // 🔥 ADD THIS
+  window.editIndex = undefined;
+
+  const btn = document.getElementById("createItemBtn");
+  if(btn){
+    btn.innerText = "Create Item";
+  }
 }
 
 function resetCreateItemForm(){
@@ -8751,7 +8727,7 @@ if(!section){
 }
     return;
   }
-
+if(window.editIndex === undefined){
   // 🔥 EXACT DUPLICATE NAME CHECK
 const duplicate = (window.menuData || []).find(item =>
   String(item.Name || "").trim().toLowerCase() === name.toLowerCase()
@@ -8767,6 +8743,7 @@ if(duplicate){
 
   document.getElementById("newItemName")?.focus();
   return;
+}
 }
   
  const payload = {
@@ -8786,8 +8763,12 @@ if(duplicate){
   btn.disabled = false;
   btn.textContent = "Create Item";
 }
-
-prepareNewItemForManage(payload);
+if(window.editIndex !== undefined){
+  payload.index = window.editIndex;
+  updateItem(payload);   // 🔥 edit mode
+} else {
+  prepareNewItemForManage(payload); // 🔥 create mode
+}
 }
   
 
