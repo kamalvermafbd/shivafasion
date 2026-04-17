@@ -8291,48 +8291,51 @@ document.getElementById("menuSearch")
     row.style.display = show ? "" : "none";
   });
 }
-function openManageItem(index){
+
+  function openManageItem(index){
 
   const item = window.menuData[index];
 
-  const modal = document.getElementById("manageItemModal");
-  const content = document.getElementById("manageItemContent");
+  const box = document.getElementById("manageItemContent");
 
-  content.innerHTML = `
-    <div class="form-row">
-      <label>Name</label>
-      <input id="editItemName" value="${item.Name || ""}">
+  box.innerHTML = `
+    <div class="price-form">
+
+      <div class="form-row">
+        <label>Name</label>
+        <input id="editItemName" type="text" value="${item.Name || ""}">
+      </div>
+
+      <div class="form-row">
+        <label>Category</label>
+        <input id="editItemCategory" type="text" value="${item.Category || ""}">
+      </div>
+
+      <div class="form-row">
+        <label>Fabric</label>
+        <input id="editItemFabric" type="text" value="${item.Fabric || ""}">
+      </div>
+
+      <div class="form-row">
+        <label>GSM</label>
+        <input id="editItemGSM" type="text" value="${item.GSM || ""}">
+      </div>
+
+      <div class="form-row">
+        <label>Colors</label>
+        <input id="editItemColors" type="text" value="${item.Colors || ""}">
+      </div>
+
+      <div style="margin-top:10px;">
+        <button onclick="saveManageItem(${index})">Save</button>
+      </div>
+
     </div>
-
-    <div class="form-row">
-      <label>Category</label>
-      <input id="editItemCategory" value="${item.Category || ""}">
-    </div>
-
-    <div class="form-row">
-      <label>Fabric</label>
-      <input id="editItemFabric" value="${item.Fabric || ""}">
-    </div>
-
-    <div class="form-row">
-      <label>GSM</label>
-      <input id="editItemGSM" value="${item.GSM || ""}">
-    </div>
-
-    <div class="form-row">
-      <label>Colors</label>
-      <input id="editItemColors" value="${item.Colors || ""}">
-    </div>
-
-    <button onclick="saveItemChanges(${index})"
-      style="margin-top:10px;background:#28a745;color:#fff;padding:6px 12px;border:none;border-radius:5px;">
-      Save
-    </button>
   `;
 
-  modal.style.display = "block";
+  document.getElementById("manageItemModal").classList.add("active");
 }
-
+  
 function saveItemChanges(index){
 
   const updatedData = {
