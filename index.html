@@ -1617,6 +1617,7 @@ if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
   loadSectionCategory(); // 🔥 YAHI ADD KARNA HAI
+  loadCategoryFilter(); // 🔥 ADD THIS LINE
 }
 if (pageId === 'pageTableStatus') {
   loadRestaurantInfo();
@@ -8094,7 +8095,27 @@ async function loadSectionCategory() {
     console.error("Section load error:", err);
   }
 }
-  
+
+  function loadCategoryFilter() {
+
+  const select = document.getElementById("categoryFilter");
+
+  if(!select || !window.sectionCategoryMap) return;
+
+  let allCategories = [];
+
+  Object.values(window.sectionCategoryMap).forEach(arr => {
+    allCategories = allCategories.concat(arr);
+  });
+
+  allCategories = [...new Set(allCategories)];
+
+  select.innerHTML =
+    `<option value="">All Categories</option>` +
+    allCategories.map(c =>
+      `<option value="${c}">${c}</option>`
+    ).join("");
+}
   async function loadProductMasters() {
   try {
     const [gsmList, colorList] = await Promise.all([
