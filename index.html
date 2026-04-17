@@ -8811,110 +8811,109 @@ function prepareNewItemForManage(payload){
   window.forcePriceSetup = true;
   openManageMenu(tempIndex);
 }
-  
-function saveNewItem(e){
-const btn = e?.target;
-if(btn){
-  btn.disabled = true;
- btn.textContent = window.itemMode === "edit"
+  function saveNewItem(e){
+
+  const btn = e?.target;
+
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = window.itemMode === "edit"
       ? "⏳ Updating..."
       : "⏳ Creating...";
   }
-  
+
   const name = document.getElementById("newItemName").value.trim();
-const section = document.getElementById("newItemSection").value.trim();  
+  const section = document.getElementById("newItemSection").value.trim();  
   const category = document.getElementById("newItemCategory").value.trim();
   const description = document.getElementById("newItemDescription").value.trim();
   const imageUrl = document.getElementById("newItemImage").value.trim();
-  const hot = document.getElementById("newItemHot").checked
-  ? "TRUE"
-  : "";
+  const hot = document.getElementById("newItemHot").checked ? "TRUE" : "";
   const cat2 = document.getElementById("newItemCat2").value;
-const fabric = document.getElementById("newItemFabric").value.trim();
-const gsm = document.getElementById("newItemGSM").value.trim();
-const moq = document.getElementById("newItemMOQ").value.trim();
+  const fabric = document.getElementById("newItemFabric").value.trim();
+  const gsm = document.getElementById("newItemGSM").value.trim();
+  const moq = document.getElementById("newItemMOQ").value.trim();
 
-const colors = [...document.querySelectorAll("#newItemColors input:checked")]
-  .map(el => el.value)
-  .join(", ");
+  const colors = [...document.querySelectorAll("#newItemColors input:checked")]
+    .map(el => el.value)
+    .join(", ");
 
-  
- // ✅ validation
+  // ✅ validation
   if(!name || !section || !category){
     alert("⚠️ Name, Section, Category required");
+
     if(btn){
-  btn.disabled = false;
-  btn.textContent = window.itemMode === "edit"
+      btn.disabled = false;
+      btn.textContent = window.itemMode === "edit"
         ? "Update Item"
         : "Create Item";
-}
+    }
+
     return;
   }
 
+  // 🔥 DUPLICATE CHECK (FINAL FIX)
+  const duplicate = (window.menuData || []).find((item) => {
 
-// 🔥 DUPLICATE CHECK (FINAL FIX)
-const duplicate = (window.menuData || []).find((item, i) => {
+    const sameName =
+      String(item.Name || "").trim().toLowerCase() === name.toLowerCase();
 
-  const sameName =
-    String(item.Name || "").trim().toLowerCase() === name.toLowerCase();
+    if(!sameName) return false;
 
-  if(!sameName) return false;
+    // 🔥 EDIT MODE → ignore SAME ITEM BY ID
+    if(window.itemMode === "edit"){
+      const currentId = window.menuData[window.editIndex]?.itemId;
+      if(String(item.itemId) === String(currentId)){
+        return false;
+      }
+    }
 
-  // 🔥 EDIT MODE → ignore current item
-  if(window.itemMode === "edit" && i === window.editIndex){
-    return false;
+    return true;
+  });
+
+  if(duplicate){
+    alert("❌ Same item already exists");
+
+    if(btn){
+      btn.disabled = false;
+      btn.textContent = window.itemMode === "edit"
+        ? "Update Item"
+        : "Create Item";
+    }
+
+    return;
   }
 
-  return true;
-});
+  const payload = {
+    Name: name,
+    Section: section,
+    Category: category,
+    Fabric: fabric,
+    GSM: gsm,
+    MOQ: moq,
+    Colors: colors,
+    Description: description,
+    "Image Url": imageUrl,
+    Hotselling: hot,
+    Cat2: cat2
+  };
 
-if(duplicate){
-  alert("❌ Same item already exists");
-
-  if(btn){
-    btn.disabled = false;
-    btn.textContent = window.itemMode === "edit"
-      ? "Update Item"
-      : "Create Item";
-  }
-
-  return;
-}
-
-  
- const payload = {
-  Name: name,
-  Section: section,
-  Category: category,
-  Fabric: fabric,
-  GSM: gsm,
-  MOQ: moq,
-  Colors: colors,
-  Description: description,
-  "Image Url": imageUrl,
-  Hotselling: hot,
-  Cat2: cat2
-};
-
-// 🔥 FINAL MODE SWITCH
+  // 🔥 FINAL MODE SWITCH
   if(window.itemMode === "edit"){
 
     payload.itemId = Number(window.menuData[window.editIndex].itemId);
-
     updateItem(payload, btn);
 
   } else {
 
     prepareNewItemForManage(payload);
-closeCreateItemModal();   // 🔥 ADD THIS
-     window.itemMode = "create";   // 🔥 YAHAN ADD KAR
+    closeCreateItemModal();
+
     if(btn){
       btn.disabled = false;
       btn.textContent = "Create Item";
     }
   }
 }
-
   async function updateItem(payload, btn){
 
   if(btn){
