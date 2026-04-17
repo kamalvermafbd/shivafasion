@@ -8851,23 +8851,37 @@ const colors = [...document.querySelectorAll("#newItemColors input:checked")]
     return;
   }
 
-   // 🔥 duplicate check (only create mode)
-  if(window.itemMode === "create"){
-    const duplicate = (window.menuData || []).find(item =>
-      String(item.Name || "").trim().toLowerCase() === name.toLowerCase()
-    );
 
-    if(duplicate){
-      alert("❌ Same item already exists");
+// 🔥 DUPLICATE CHECK (FINAL FIX)
+const duplicate = (window.menuData || []).find((item, i) => {
 
-      if(btn){
-        btn.disabled = false;
-        btn.textContent = "Create Item";
-      }
+  const sameName =
+    String(item.Name || "").trim().toLowerCase() === name.toLowerCase();
 
-      return;
-    }
+  if(!sameName) return false;
+
+  // 🔥 EDIT MODE → ignore current item
+  if(window.itemMode === "edit" && i === window.editIndex){
+    return false;
   }
+
+  return true;
+});
+
+if(duplicate){
+  alert("❌ Same item already exists");
+
+  if(btn){
+    btn.disabled = false;
+    btn.textContent = window.itemMode === "edit"
+      ? "Update Item"
+      : "Create Item";
+  }
+
+  return;
+}
+
+  
  const payload = {
   Name: name,
   Section: section,
