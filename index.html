@@ -7991,13 +7991,13 @@ function getMOQ(item){
 
   return colorCount * variantCount;
 }
-  async function loadSectionCategory() {
+
+async function loadSectionCategoryWithoutFilter(){
+
   try {
     const res = await apiGet("categoryMap");
 
     window.sectionCategoryMap = res.data || {};
-
-    console.log("CategoryMap Loaded:", window.sectionCategoryMap);
 
     const sectionEl = document.getElementById("newItemSection");
 
@@ -8007,15 +8007,42 @@ function getMOQ(item){
           `<option value="${sec}">${sec}</option>`
         ).join("");
     }
-loadSectionFilter();
-loadCategoryFilterBySection();
-applyMenuFilter();
+
+    console.log("✅ Section loaded (no filter)");
+
+  } catch (err) {
+    console.error(err);
+  }
+
+}
+  
+ async function loadSectionCategory() {
+  try {
+    const res = await apiGet("categoryMap");
+
+    window.sectionCategoryMap = res.data || {};
+
+    const sectionEl = document.getElementById("newItemSection");
+
+    if(sectionEl){
+      sectionEl.innerHTML = `<option value="">Select Section</option>` +
+        Object.keys(window.sectionCategoryMap).map(sec =>
+          `<option value="${sec}">${sec}</option>`
+        ).join("");
+    }
+
+    // 🔥 ✅ GUARD YAHAN LAGANA HAI (IMPORTANT)
+    if(!document.getElementById("createItemModal").classList.contains("active")){
+      loadSectionFilter();
+      loadCategoryFilterBySection();
+      applyMenuFilter();
+    }
+
   } catch (err) {
     console.error("Section load error:", err);
   }
 }
-
-
+  
 function loadSectionFilter(){
 
   const select = document.getElementById("sectionFilter");
@@ -8173,16 +8200,18 @@ document.getElementById("menuSearch")
     row.style.display = show ? "" : "none";
   });
 }
-
- function openManageItem(index){
+async function openManageItem(index){
 
   const item = window.menuData[index];
-console.log("ITEM GSM:", item.GSM);
-console.log("ITEM COLORS:", item.Colors);
-  // 🔥 modal open
+
   document.getElementById("createItemModal").classList.add("active");
 
-  // 🔥 values
+  // ✅ WAIT properly
+  await loadProductMasters();
+  await loadSectionCategory();
+
+  // 🔥 IMPORTANT: ab sab render ho chuka hai
+
   document.getElementById("newItemName").value = item.Name || "";
   document.getElementById("newItemFabric").value = item.Fabric || "";
   document.getElementById("newItemDescription").value = item.Description || "";
@@ -8191,40 +8220,19 @@ console.log("ITEM COLORS:", item.Colors);
   document.getElementById("newItemHot").checked = item.Hotselling === "TRUE";
   document.getElementById("newItemCat2").value = item.Cat2 || "Single";
 
-  // 🔥 सही function
-  loadSectionCategory();   // ✅ CHANGE 1
+  // section → category
+  document.getElementById("newItemSection").value = item.Section || "";
+  loadCategoryDropdown();
 
-  // 🔥 masters load (GSM + colors)
-  loadProductMasters();    // ✅ ADD THIS
+  document.getElementById("newItemCategory").value = item.Category || "";
 
-  setTimeout(() => {
+  // ✅ FINAL (no timeout)
+  document.getElementById("newItemGSM").value = (item.GSM || "").trim();
+  setSelectedColors(item.Colors);
 
-    document.getElementById("newItemSection").value = item.Section || "";
-    loadCategoryDropdown();
-
-    setTimeout(() => {
-      document.getElementById("newItemCategory").value = item.Category || "";
-    }, 200);
-
-    document.getElementById("newItemGSM").value =
-  (item.GSM || "").trim();
-    console.log(
-  "AFTER SET GSM:",
-  document.getElementById("newItemGSM").value
-);
-    // 🔥 COLORS FIX
-    setTimeout(() => {
-      setSelectedColors(item.Colors);   // ✅ ADD THIS
-      console.log("BEFORE SET COLORS:", item.Colors);
-    }, 300);
-
-  }, 200);
-
-  // 🔥 edit mode
   window.editIndex = index;
   document.getElementById("createItemBtn").innerText = "Update Item";
 }
-
   function setSelectedColors(colorsString){
 
   if(!colorsString) return;
