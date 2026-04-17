@@ -7959,6 +7959,22 @@ function filterMenu(){
   document.getElementById("menuCategoryFilter").value = ""; // 🔥 add this
   filterMenu();
 }
+
+  function clearMenuSearch(){
+
+  // input clear
+  document.getElementById("menuSearch").value = "";
+
+  // optional: reset filters भी करना है तो
+  document.getElementById("sectionFilter").value = "";
+  document.getElementById("categoryFilter").value = "";
+
+  // category reload (important)
+  loadCategoryFilterBySection();
+
+  // filter apply
+  applyMenuFilter();
+}
   
 function uploadImage(inputEl, index) {
 console.log("🔥 uploadImage called", index);
