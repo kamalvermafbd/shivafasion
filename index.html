@@ -1367,6 +1367,37 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 </div>
 
+<!-- 🔥 YAHI PASTE KARNA HAI -->
+<div id="updateItemModal" class="modalitem-overlay">
+  <div class="manage-modal-box">
+    <h3>✏️ Update Item</h3>
+
+    <div class="price-form">
+
+      <div class="form-row">
+        <label>Name</label>
+        <input id="updateName" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Section</label>
+        <input id="updateSection" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Category</label>
+        <input id="updateCategory" type="text">
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+        <button onclick="updateExistingItem()">Update Item</button>
+        <button onclick="closeUpdateModal()">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+      
       
 <div id="pageTableStatus" class="page" style="display:none;">
   <div class="container pos-full">
@@ -2737,7 +2768,7 @@ function stopBarcodeScanner() {
 
 
 function openUpdateModal(index){
-
+console.log("🔥 openUpdateModal called", index);
   const item = window.menuData[index];
 
   // 🔥 store current item id
