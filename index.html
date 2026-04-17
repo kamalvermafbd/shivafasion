@@ -2811,7 +2811,7 @@ async function openUpdateModal(index){
 
   // 🔥 load masters (reuse same functions)
  await loadUpdateMasters(); 
-  
+
   // 🔥 fill fields
   document.getElementById("updateName").value = item.Name || "";
 
@@ -2826,6 +2826,60 @@ async function openUpdateModal(index){
   console.log("✅ Update modal ready");
 }
 
+
+  async function loadUpdateMasters(){
+
+  try{
+    const [gsmList, colorList] = await Promise.all([
+      apiGet("getGSMMaster"),
+      apiGet("getColorMaster")
+    ]);
+
+    console.log("🔥 UPDATE GSM:", gsmList);
+    console.log("🔥 UPDATE COLORS:", colorList);
+
+    // 🔹 GSM DROPDOWN
+    const gsmEl = document.getElementById("updateGSM");
+
+    if(gsmEl){
+      gsmEl.innerHTML =
+        `<option value="">Select GSM</option>` +
+        (gsmList || []).map(g =>
+          `<option value="${g}">${g}</option>`
+        ).join("");
+    }
+
+    // 🔹 COLORS
+    const colorBox = document.getElementById("updateColors");
+
+    if(colorBox){
+      colorBox.innerHTML = (colorList || []).map(c => `
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <input type="checkbox" value="${c.Color}" onchange="updateColorButtonText()">
+          <span style="width:14px;height:14px;background:${c.Hex};border:1px solid #ccc;"></span>
+          <span>${c.Color}</span>
+        </label>
+      `).join("");
+
+      // 🔹 toggle dropdown
+      const btn = document.getElementById("updateColorBtn");
+
+      if(btn){
+        btn.onclick = () => {
+          colorBox.style.display =
+            colorBox.style.display === "none" ? "block" : "none";
+        };
+
+        btn.innerText = "Select Colors ▼";
+      }
+    }
+
+  }catch(err){
+    console.error("❌ Update master load error:", err);
+  }
+}
+  
+  
   function loadUpdateCategoryDropdown(){
 
   const section = document.getElementById("updateSection").value;
