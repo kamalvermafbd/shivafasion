@@ -1224,6 +1224,12 @@ td:nth-child(8) { width: 220px; } /* Action */
 
     <div class="menu-toolbar">
 
+  <!-- 🔥 SECTION -->
+  <select id="sectionFilter" onchange="loadCategoryFilterBySection()">
+    <option value="">All Sections</option>
+  </select>
+
+  <!-- 🔥 CATEGORY -->
   <select id="categoryFilter">
     <option value="">All Categories</option>
   </select>
@@ -8099,34 +8105,54 @@ function getMOQ(item){
           `<option value="${sec}">${sec}</option>`
         ).join("");
     }
-
-    loadCategoryFilter(); // 🔥🔥🔥 ADD THIS LINE
+loadSectionFilter();
+loadCategoryFilterBySection();
 
   } catch (err) {
     console.error("Section load error:", err);
   }
 }
 
-  function loadCategoryFilter() {
 
-  const select = document.getElementById("categoryFilter");
+function loadSectionFilter(){
 
+  const select = document.getElementById("sectionFilter");
   if(!select || !window.sectionCategoryMap) return;
 
-  let allCategories = [];
-
-  Object.values(window.sectionCategoryMap).forEach(arr => {
-    allCategories = allCategories.concat(arr);
-  });
-
-  allCategories = [...new Set(allCategories)];
+  const sections = Object.keys(window.sectionCategoryMap);
 
   select.innerHTML =
-    `<option value="">All Categories</option>` +
-    allCategories.map(c =>
-      `<option value="${c}">${c}</option>`
-    ).join("");
+    `<option value="">All Sections</option>` +
+    sections.map(s => `<option value="${s}">${s}</option>`).join("");
 }
+
+
+function loadCategoryFilterBySection(){
+
+  const section = document.getElementById("sectionFilter").value;
+  const catSelect = document.getElementById("categoryFilter");
+
+  if(!catSelect) return;
+
+  let categories = [];
+
+  if(!section){
+    Object.values(window.sectionCategoryMap).forEach(arr => {
+      categories = categories.concat(arr);
+    });
+  } else {
+    categories = window.sectionCategoryMap[section] || [];
+  }
+
+  categories = [...new Set(categories)];
+
+  catSelect.innerHTML =
+    `<option value="">All Categories</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+  
+  
   async function loadProductMasters() {
   try {
     const [gsmList, colorList] = await Promise.all([
