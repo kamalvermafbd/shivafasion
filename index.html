@@ -2731,6 +2731,183 @@ function stopBarcodeScanner() {
   video.srcObject = null;
   video.style.display = "none";
 }
+
+let currentManageIndex = null;
+  
+function openManageMenu(index){
+
+  if(unitList.length === 0){
+    alert("Unit loading... try again");
+    return;
+  }
+
+  console.log("Manage clicked:", index);
+
+  if(!window.menuData || !window.menuData[index]){
+    console.error("Item not found", index);
+    return;
+  }
+
+  currentManageIndex = index;
+
+  const item = window.menuData[index];
+  console.log("MANAGE ITEM FULL:", item);
+  window.currentManageSection = item.Section || "";
+  
+  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
+  document.getElementById("manageImage").value =
+  item["Image Url"] || item.Image || "";
+
+document.getElementById("manageDescription").value =
+  item.Description || "";
+
+document.getElementById("manageHotSelling").checked =
+  String(item.Hotselling || item.HotSelling || item["Hot Selling"] || "")
+    .trim()
+    .toLowerCase() === "true";
+  const name = item.Name || "Item";
+  const type = item["Cat2"] || "";
+
+// 🔥 UNIT CONTROL (ADD THIS)
+const unitEl = document.getElementById("unit");
+
+if(unitEl){
+  if((type || "").toLowerCase() === "multi"){
+    unitEl.disabled = false;   // editable
+  } else {
+    unitEl.disabled = !window.pendingNewItem;
+    
+  }
+}
+
+  // 🔥 ADD VARIANT BUTTON CONTROL
+const addBtn = document.getElementById("addVariantBtn");
+
+if(addBtn){
+ if((type || "").toLowerCase() === "multi"){
+    addBtn.style.display = "block";   // ✅ show
+  } else {
+    addBtn.style.display = "none";    // ❌ hide for single
+  }
+}
+  document.getElementById("manageItemName").innerText = name;
+  document.getElementById("manageItemType").innerText = type;
+
+  window.currentItemType = type;
+
+const openingRow = document.getElementById("openingRow");
+
+if (openingRow) {
+  const stockMode = String(restaurantInfo.stock_update || "").trim().toLowerCase();
+  openingRow.style.display =
+    stockMode === "check_closing_stock" ? "grid" : "none";
+}
+  
+  const modal = document.getElementById("manageModal");
+
+  const saveBtn = document.getElementById("saveManageBtn");
+const createBtn = document.getElementById("saveNewItemBtn");
+
+if(window.pendingNewItem){
+  if(saveBtn) saveBtn.style.display = "none";
+  if(createBtn) createBtn.style.display = "inline-block";
+} else {
+  if(saveBtn) saveBtn.style.display = "inline-block";
+  if(createBtn) createBtn.style.display = "none";
+}
+  
+// 🔥 NEW ITEM → unit first lock flow
+if(window.pendingNewItem){
+  document.getElementById("unit").disabled = false;
+  lockFieldsUntilUnit();
+}
+  if(modal){
+
+    modal.classList.add("active");
+
+document.querySelectorAll(".manage-tabs .tab").forEach(el => el.classList.remove("active"));
+document.querySelectorAll(".tab-pane").forEach(el => el.classList.remove("active"));
+document.querySelector(".manage-tabs .tab").classList.add("active");
+document.getElementById("tab-price").classList.add("active");
+
+    const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "none";
+   // disableAllFields();
+   
+
+    // =========================
+    // 🔥 MAIN LOGIC
+    // =========================
+
+   if((type || "").toLowerCase() === "multi"){
+      disableAllFields();   // 🔥 ADD THIS HERE
+// 🔥 LOADING STATE (ADD THIS)
+ document.getElementById("manageLoading").style.display = "block";
+      const btn = document.getElementById("addVariantBtn");
+     
+if(btn) btn.disabled = true;
+      
+      apiGet("getVariants", { name: item.Name })
+        .then(function(data){
+        document.getElementById("manageLoading").style.display = "none";
+
+const btn = document.getElementById("addVariantBtn");
+if(btn) btn.disabled = false;
+  
+          console.log("Manage Variants:", data);
+
+          if(!data || data.length === 0){
+
+  manageVariants = [];          // 🔥 ADD THIS
+  renderUnitDropdown();         // 🔥 ADD THIS
+  alert("No variants found");
+  return;
+}
+          manageVariants = data;
+          manageVariantIndex = 0;
+ renderUnitDropdown();
+loadManageVariant(manageVariants[0]); // ✅ first variant
+const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "flex";
+updateVariantUI();
+        })
+        .catch(err => {
+          document.getElementById("manageLoading").style.display = "none";
+
+const btn = document.getElementById("addVariantBtn");
+if(btn) btn.disabled = false;
+          
+          console.error("Variant load error:", err);
+          alert("Error loading variants");
+        });
+
+    } else {
+
+  manageVariants = [];      // 🔥 reset
+  renderUnitDropdown();     // 🔥 MAIN FIX
+      // ✅ SINGLE ITEM
+// ✅ Existing item only
+  if(!window.pendingNewItem){
+    fillPriceFields(item);
+    fillOtherFields(item);
+  }
+const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "none";
+    }
+
+    // =========================
+
+  } else {
+
+    console.error("manageModal not found");
+
+  }
+}
+function closeManageItem(){
+  document.getElementById("manageItemModal").style.display = "none";
+}
+
+  
 async function openManageItem(index){
 
   const item = window.menuData[index];
