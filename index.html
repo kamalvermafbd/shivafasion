@@ -1706,7 +1706,7 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 if (pageId === 'pageMenu') {
    loadRestaurantInfo(); // 🔥 IMPORTANT FIX
   // 🔥 FIRST: category map load
-  loadSectionCategory();
+  await loadSectionCategory();
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
   
@@ -2832,23 +2832,47 @@ async function loadUpdateMasters(){
 
   try{
 
-    const [gsmList, colorList] = await Promise.all([
+    const [gsmList, colorList, sectionList] = await Promise.all([
       apiGet("getGSMMaster"),
-      apiGet("getColorMaster")
+      apiGet("getColorMaster"),
+      apiGet("getSectionMaster")
     ]);
 
+    // =====================
+    // ✅ SECTION
+    // =====================
+
+    const sectionEl = document.getElementById("updateSection");
+
+    if(sectionEl){
+      sectionEl.innerHTML =
+        `<option value="">Select Section</option>` +
+        (sectionList || []).map(s =>
+          `<option value="${s.Section}">${s.Section}</option>`
+        ).join("");
+    }
+
+    // 🔥 IMPORTANT
+    await loadSectionCategory();
+
+    // =====================
     // ✅ GSM
+    // =====================
+
     const gsmEl = document.getElementById("updateGSM");
 
     if(gsmEl){
       gsmEl.innerHTML =
         `<option value="">Select GSM</option>` +
         (gsmList || []).map(g =>
-          `<option value="${g}">${g}</option>`
-        ).join("");
+          `<option value="${g}">${g}</option>
+        `).join("");
     }
 
+    // =====================
     // ✅ COLORS
+    // =====================
+
     const colorBox = document.getElementById("updateColors");
 
     if(colorBox){
@@ -2862,19 +2886,18 @@ async function loadUpdateMasters(){
       `).join("");
     }
 
-    // ✅ button reset
     const btn = document.getElementById("updateColorBtn");
+
     if(btn){
       btn.innerText = "Select Colors ▼";
     }
 
-    console.log("✅ Update masters loaded");
+    console.log("✅ Update masters fully loaded");
 
   } catch(err){
     console.error("Update master error:", err);
   }
 }
-  
   function setUpdateSelectedColors(colorsString){
 
   if(!colorsString) return;
@@ -2925,9 +2948,7 @@ async function loadUpdateMasters(){
     ).join("");
 }
 
-  function setUpdateSelectedColors(colors){
-  setSelectedColors(colors); // reuse
-}
+
   
   
 let currentManageIndex = null;
