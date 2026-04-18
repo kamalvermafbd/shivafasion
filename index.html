@@ -1192,13 +1192,35 @@
       .price-form .form-row input,
 .price-form .form-row select {
   width: 100%;
-  max-width: 260px;
+  max-width: 240px;
 }
       .multi-select-btn {
   width: 100%;
   min-height: 38px;
   display: flex;
   align-items: center;
+}
+
+      #updateColors {
+  min-height: 180px !important;
+  max-height: 220px !important;
+  overflow-y: auto;
+  width: 100%;
+}
+
+#updateColors label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#updateColors input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
 }
     </style>
   </head>
