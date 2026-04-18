@@ -8503,13 +8503,19 @@ console.log("✅ Update masters fully loaded");
   
     reader.readAsDataURL(file);
   }
- async function uploadUpdateItemImage(inputEl) {
+ 
+    async function uploadUpdateItemImage(inputEl) {
   console.log("🔥 uploadUpdateItemImage called");
   console.log("FILES:", inputEl.files);
 
   const modal = document.getElementById("updateItemModal");
   const imgInput = document.getElementById("updateImage");
   const previewImg = null;
+
+  // 🔥 buttons disable targets
+  const uploadBtnLabel = document.querySelector('label[for="updateItemImageUpload"]');
+  const updateBtn = modal.querySelector('button[onclick="updateExistingItem()"]');
+  const cancelBtn = modal.querySelector('button[onclick="closeUpdateModal()"]');
 
   if (!imgInput) {
     console.error("❌ update image input not found");
@@ -8519,29 +8525,70 @@ console.log("✅ Update masters fully loaded");
 
   const oldValue = imgInput.value; // backup old URL
 
-  // 🔥 professional feel → textbox me loading text
+  // =========================
+  // 🔥 LOADING START
+  // =========================
+
   imgInput.value = "Uploading your image...";
   imgInput.disabled = true;
 
-  // modal soft lock
   modal.style.pointerEvents = "none";
   modal.style.opacity = "0.85";
+
+  // 🔥 only these 3 controls disable
+  if (uploadBtnLabel) {
+    uploadBtnLabel.style.pointerEvents = "none";
+    uploadBtnLabel.style.opacity = "0.5";
+  }
+
+  if (updateBtn) {
+    updateBtn.disabled = true;
+    updateBtn.style.opacity = "0.6";
+    updateBtn.style.cursor = "not-allowed";
+  }
+
+  if (cancelBtn) {
+    cancelBtn.disabled = true;
+    cancelBtn.style.opacity = "0.6";
+    cancelBtn.style.cursor = "not-allowed";
+  }
+
+  // helper function
+  function resetLoadingState() {
+    imgInput.disabled = false;
+
+    modal.style.pointerEvents = "";
+    modal.style.opacity = "";
+
+    if (uploadBtnLabel) {
+      uploadBtnLabel.style.pointerEvents = "";
+      uploadBtnLabel.style.opacity = "";
+    }
+
+    if (updateBtn) {
+      updateBtn.disabled = false;
+      updateBtn.style.opacity = "";
+      updateBtn.style.cursor = "";
+    }
+
+    if (cancelBtn) {
+      cancelBtn.disabled = false;
+      cancelBtn.style.opacity = "";
+      cancelBtn.style.cursor = "";
+    }
+  }
 
   const file = inputEl.files && inputEl.files[0];
 
   if (!file) {
     imgInput.value = oldValue;
-    imgInput.disabled = false;
-    modal.style.pointerEvents = "";
-    modal.style.opacity = "";
+    resetLoadingState();
     return alert("No file selected");
   }
 
   if (!file.type.startsWith("image/")) {
     imgInput.value = oldValue;
-    imgInput.disabled = false;
-    modal.style.pointerEvents = "";
-    modal.style.opacity = "";
+    resetLoadingState();
     return alert("Only image files allowed");
   }
 
@@ -8551,9 +8598,7 @@ console.log("✅ Update masters fully loaded");
     console.error("❌ FileReader error:", err);
 
     imgInput.value = oldValue;
-    imgInput.disabled = false;
-    modal.style.pointerEvents = "";
-    modal.style.opacity = "";
+    resetLoadingState();
 
     alert("File read error");
   };
@@ -8566,9 +8611,7 @@ console.log("✅ Update masters fully loaded");
         console.error("❌ FileReader result empty", e);
 
         imgInput.value = oldValue;
-        imgInput.disabled = false;
-        modal.style.pointerEvents = "";
-        modal.style.opacity = "";
+        resetLoadingState();
 
         return alert("File read failed (empty result)");
       }
@@ -8577,9 +8620,7 @@ console.log("✅ Update masters fully loaded");
 
       if (!base64) {
         imgInput.value = oldValue;
-        imgInput.disabled = false;
-        modal.style.pointerEvents = "";
-        modal.style.opacity = "";
+        resetLoadingState();
 
         return alert("Invalid image data");
       }
@@ -8602,22 +8643,18 @@ console.log("✅ Update masters fully loaded");
 
         // ✅ final URL set
         imgInput.value = url;
-        imgInput.disabled = false;
 
         if (previewImg) {
           previewImg.src = url + "?v=" + Date.now();
         }
 
-        modal.style.pointerEvents = "";
-        modal.style.opacity = "";
+        resetLoadingState();
       })
       .catch(function (err) {
         console.error("🔥 FINAL ERROR:", err);
 
         imgInput.value = oldValue;
-        imgInput.disabled = false;
-        modal.style.pointerEvents = "";
-        modal.style.opacity = "";
+        resetLoadingState();
 
         alert("Upload failed: " + err);
       });
@@ -8626,9 +8663,7 @@ console.log("✅ Update masters fully loaded");
       console.error("🔥 JS CRASH:", err);
 
       imgInput.value = oldValue;
-      imgInput.disabled = false;
-      modal.style.pointerEvents = "";
-      modal.style.opacity = "";
+      resetLoadingState();
 
       alert("JS Crash: " + err.message);
     }
@@ -8636,7 +8671,6 @@ console.log("✅ Update masters fully loaded");
 
   reader.readAsDataURL(file);
 }
-    
   function getColorCount(item){
     const colors = (item.Colors || "").split(",")
       .map(c => c.trim())
