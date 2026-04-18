@@ -2498,6 +2498,9 @@
       }
     });
   }
+
+
+
     
   function uploadNewItemImage(inputEl){
   
@@ -2898,7 +2901,47 @@
     video.srcObject = null;
     video.style.display = "none";
   }
-  
+
+function closeUpdateModal() {
+  document.getElementById("updateItemModal").classList.remove("active");
+}
+    
+async function updateExistingItem() {
+  const btn = document.querySelector(
+    '#updateItemModal button[onclick="updateExistingItem()"]'
+  );
+
+  const payload = {
+    itemId: window.currentEditId || "",
+
+    Name: document.getElementById("updateName")?.value?.trim() || "",
+    Section: document.getElementById("updateSection")?.value || "",
+    Category: document.getElementById("updateCategory")?.value || "",
+    Fabric: document.getElementById("updateFabric")?.value?.trim() || "",
+    GSM: document.getElementById("updateGSM")?.value || "",
+    Description: document.getElementById("updateDescription")?.value?.trim() || "",
+    Image: document.getElementById("updateImage")?.value?.trim() || "",
+
+    Hotselling: document.getElementById("updateHot")?.checked ? "TRUE" : "FALSE",
+
+    Colors: getUpdateSelectedColors
+      ? getUpdateSelectedColors().join(", ")
+      : ""
+  };
+
+  console.log("🔥 UPDATE PAYLOAD:", payload);
+
+  if (!payload.itemId) {
+    return alert("Item ID missing");
+  }
+
+  if (!payload.Name) {
+    return alert("Name is required");
+  }
+
+  await updateItem(payload, btn);
+}
+    
   async function openUpdateModal(index){
 
   const item = window.menuData[index];
@@ -9522,42 +9565,45 @@ console.log("✅ Update masters fully loaded");
       }
     }
   }
-    async function updateItem(payload, btn){
-  
-    if(btn){
-      btn.disabled = true;
-      btn.textContent = "⏳ Updating...";
-    }
-  
-    try{
-  
-      const res = await apiPost("updateMenuItemNew", payload);
-  
-      if(res && res.success){
-  
-        alert("✅ Item updated");
-  
-        closeCreateItemModal();
-        await loadMenuData();
-  
-      } else {
-  
-        alert("❌ " + (res?.message || "Update failed"));
-  
-      }
-  
-    } catch(err){
-  
-      console.error(err);
-      alert("❌ API error");
-  
-    }
-  
-    if(btn){
-      btn.disabled = false;
-      btn.textContent = "Update Item";
-    }
+
+
+async function updateItem(payload, btn){
+
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = "⏳ Updating...";
   }
+
+  try{
+
+    const res = await apiPost("updateMenuItemNew", payload);
+
+    if(res && res.success){
+
+      alert("✅ Item updated");
+
+      closeUpdateModal(); // ✅ fixed
+      await loadMenuData();
+
+    } else {
+
+      alert("❌ " + (res?.message || "Update failed"));
+
+    }
+
+  } catch(err){
+
+    console.error(err);
+    alert("❌ API error");
+
+  }
+
+  if(btn){
+    btn.disabled = false;
+    btn.textContent = "Update Item";
+  }
+}
+
     
   function editRow(index) {
   
