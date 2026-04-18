@@ -8972,7 +8972,13 @@ console.log("✅ Update masters fully loaded");
   list.style.display =
     list.style.display === "block" ? "none" : "block";
 }
+function toggleUpdateColorDropdown(){
+  const box = document.getElementById("updateColors");
+  if(!box) return;
 
+  box.style.display =
+    box.style.display === "block" ? "none" : "block";
+}
 
   function updateUpdateColorText(){
   
@@ -8988,13 +8994,7 @@ console.log("✅ Update masters fully loaded");
       : "Select Colors ▼";
   }
     
-  function toggleUpdateColorDropdown(){
-  const box = document.getElementById("updateColors");
-  if(!box) return;
-
-  box.style.display =
-    box.style.display === "block" ? "none" : "block";
-}
+  
   
     document.getElementById("sectionFilter")
     .addEventListener("change", applyMenuFilter);
@@ -9004,6 +9004,21 @@ console.log("✅ Update masters fully loaded");
   
   document.getElementById("menuSearch")
     .addEventListener("input", applyMenuFilter);
+document.addEventListener("click", function (e) {
+  const btn = document.getElementById("updateColorBtn");
+  const box = document.getElementById("updateColors");
+
+  if (!btn || !box) return;
+
+  if (
+    !btn.contains(e.target) &&
+    !box.contains(e.target)
+  ) {
+    box.style.display = "none";
+  }
+});
+    
+    
     function applyMenuFilter(){
   
     const section = (document.getElementById("sectionFilter").value || "").trim();
