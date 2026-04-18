@@ -2832,36 +2832,31 @@ async function loadUpdateMasters(){
 
   try{
 
-    const [gsmList, colorList, sectionList] = await Promise.all([
-      apiGet("getGSMMaster"),
-      apiGet("getColorMaster"),
-      apiGet("getSectionMaster")
-    ]);
+    const [gsmList, colorList] = await Promise.all([
+  apiGet("getGSMMaster"),
+  apiGet("getColorMaster")
+]);
 
     // =====================
     // ✅ SECTION
     // =====================
 
-    const sectionEl = document.getElementById("updateSection");
+  await loadSectionCategory();
 
-  if(sectionEl){
+const sectionEl = document.getElementById("updateSection");
 
-  console.log("SECTION MASTER:", sectionList);
+if(sectionEl){
 
-  const finalSections = Array.isArray(sectionList)
-    ? sectionList
-    : (sectionList.data || []);
+  const allSections = Object.keys(window.sectionCategoryMap || {});
+
+  console.log("SECTIONS FROM MAP:", allSections);
 
   sectionEl.innerHTML =
     `<option value="">Select Section</option>` +
-    finalSections.map(s =>
-      `<option value="${s.Section}">${s.Section}</option>`
+    allSections.map(section =>
+      `<option value="${section}">${section}</option>`
     ).join("");
 }
-
-    // 🔥 IMPORTANT
-    await loadSectionCategory();
-
     // =====================
     // ✅ GSM
     // =====================
@@ -2905,6 +2900,7 @@ async function loadUpdateMasters(){
     console.error("Update master error:", err);
   }
 }
+  
   function setUpdateSelectedColors(colorsString){
 
   if(!colorsString) return;
