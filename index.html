@@ -8503,7 +8503,7 @@ console.log("✅ Update masters fully loaded");
   
     reader.readAsDataURL(file);
   }
-  async function uploadUpdateItemImage(inputEl) {
+ async function uploadUpdateItemImage(inputEl) {
   console.log("🔥 uploadUpdateItemImage called");
   console.log("FILES:", inputEl.files);
 
@@ -8517,46 +8517,31 @@ console.log("✅ Update masters fully loaded");
     return;
   }
 
-  // 🔥 Loading text create
-  let loadingText = document.getElementById("updateUploadLoading");
+  const oldValue = imgInput.value; // backup old URL
 
-  if (!loadingText) {
-    loadingText = document.createElement("div");
-    loadingText.id = "updateUploadLoading";
-    loadingText.innerText = "Uploading your image...";
-    loadingText.style.marginTop = "10px";
-    loadingText.style.color = "#d63384";
-    loadingText.style.fontWeight = "600";
-    loadingText.style.fontSize = "14px";
-    loadingText.style.textAlign = "center";
+  // 🔥 professional feel → textbox me loading text
+  imgInput.value = "Uploading your image...";
+  imgInput.disabled = true;
 
-    const box = modal.querySelector(".manage-modal-box");
-    if (box) {
-      box.appendChild(loadingText);
-    }
-  }
-
-  loadingText.style.display = "block";
-
-  // 🔥 Safe loading state
+  // modal soft lock
   modal.style.pointerEvents = "none";
   modal.style.opacity = "0.85";
 
   const file = inputEl.files && inputEl.files[0];
 
   if (!file) {
+    imgInput.value = oldValue;
+    imgInput.disabled = false;
     modal.style.pointerEvents = "";
     modal.style.opacity = "";
-    loadingText.style.display = "none";
-
     return alert("No file selected");
   }
 
   if (!file.type.startsWith("image/")) {
+    imgInput.value = oldValue;
+    imgInput.disabled = false;
     modal.style.pointerEvents = "";
     modal.style.opacity = "";
-    loadingText.style.display = "none";
-
     return alert("Only image files allowed");
   }
 
@@ -8565,9 +8550,10 @@ console.log("✅ Update masters fully loaded");
   reader.onerror = function (err) {
     console.error("❌ FileReader error:", err);
 
+    imgInput.value = oldValue;
+    imgInput.disabled = false;
     modal.style.pointerEvents = "";
     modal.style.opacity = "";
-    loadingText.style.display = "none";
 
     alert("File read error");
   };
@@ -8579,9 +8565,10 @@ console.log("✅ Update masters fully loaded");
       if (!dataUrl) {
         console.error("❌ FileReader result empty", e);
 
+        imgInput.value = oldValue;
+        imgInput.disabled = false;
         modal.style.pointerEvents = "";
         modal.style.opacity = "";
-        loadingText.style.display = "none";
 
         return alert("File read failed (empty result)");
       }
@@ -8589,9 +8576,10 @@ console.log("✅ Update masters fully loaded");
       const base64 = dataUrl.split(",")[1];
 
       if (!base64) {
+        imgInput.value = oldValue;
+        imgInput.disabled = false;
         modal.style.pointerEvents = "";
         modal.style.opacity = "";
-        loadingText.style.display = "none";
 
         return alert("Invalid image data");
       }
@@ -8612,24 +8600,24 @@ console.log("✅ Update masters fully loaded");
 
         const url = res.url || res;
 
-        // ✅ Final URL set
+        // ✅ final URL set
         imgInput.value = url;
+        imgInput.disabled = false;
 
         if (previewImg) {
           previewImg.src = url + "?v=" + Date.now();
         }
 
-        // 🔥 Remove loading state
         modal.style.pointerEvents = "";
         modal.style.opacity = "";
-        loadingText.style.display = "none";
       })
       .catch(function (err) {
         console.error("🔥 FINAL ERROR:", err);
 
+        imgInput.value = oldValue;
+        imgInput.disabled = false;
         modal.style.pointerEvents = "";
         modal.style.opacity = "";
-        loadingText.style.display = "none";
 
         alert("Upload failed: " + err);
       });
@@ -8637,9 +8625,10 @@ console.log("✅ Update masters fully loaded");
     } catch (err) {
       console.error("🔥 JS CRASH:", err);
 
+      imgInput.value = oldValue;
+      imgInput.disabled = false;
       modal.style.pointerEvents = "";
       modal.style.opacity = "";
-      loadingText.style.display = "none";
 
       alert("JS Crash: " + err.message);
     }
