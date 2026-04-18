@@ -8867,33 +8867,60 @@ console.log("✅ Update masters fully loaded");
   
   }
     
-   async function loadSectionCategory() {
-    try {
-      const res = await apiGet("categoryMap");
-  
-      window.sectionCategoryMap = res.data || {};
-  
-      const sectionEl = document.getElementById("newItemSection");
-  
-      if(sectionEl){
-        sectionEl.innerHTML = `<option value="">Select Section</option>` +
-          Object.keys(window.sectionCategoryMap).map(sec =>
-            `<option value="${sec}">${sec}</option>`
-          ).join("");
+  async function loadSectionCategory() {
+  try {
+    const res = await apiGet("getCatTable");
+
+    const raw = res.data || res || [];
+
+    window.sectionCategoryMap = {};
+
+    raw.forEach(row => {
+      const section = (row.Section || "").trim();
+      const cat = (row.Cat || "").trim();
+
+      if (!section || !cat) return;
+
+      if (!window.sectionCategoryMap[section]) {
+        window.sectionCategoryMap[section] = [];
       }
-  
-      // 🔥 ✅ GUARD YAHAN LAGANA HAI (IMPORTANT)
-      if(!document.getElementById("createItemModal").classList.contains("active")){
-        loadSectionFilter();
-        loadCategoryFilterBySection();
-        applyMenuFilter();
-      }
-  
-    } catch (err) {
-      console.error("Section load error:", err);
+
+      window.sectionCategoryMap[section].push(cat);
+    });
+
+    // remove duplicate cats
+    Object.keys(window.sectionCategoryMap).forEach(section => {
+      window.sectionCategoryMap[section] = [
+        ...new Set(window.sectionCategoryMap[section])
+      ];
+    });
+
+    const sectionEl = document.getElementById("newItemSection");
+
+    if (sectionEl) {
+      sectionEl.innerHTML =
+        `<option value="">Select Section</option>` +
+        Object.keys(window.sectionCategoryMap)
+          .map(sec => `<option value="${sec}">${sec}</option>`)
+          .join("");
     }
+
+    // filter area
+    if (
+      !document.getElementById("createItemModal")
+        .classList.contains("active")
+    ) {
+      loadSectionFilter();
+      loadCategoryFilterBySection();
+      applyMenuFilter();
+    }
+
+    console.log("✅ Section + Category loaded from Cat_Table");
+
+  } catch (err) {
+    console.error("Section load error:", err);
   }
-    
+}
   function loadSectionFilter(){
   
     const select = document.getElementById("sectionFilter");
