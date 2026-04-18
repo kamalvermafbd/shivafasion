@@ -2920,6 +2920,8 @@ document.getElementById("updateHot").checked =
       const colorBox = document.getElementById("updateColors");
   
       if(colorBox){
+        console.log("COLOR API:", colorList);
+console.log("COLOR BOX FOUND:", !!colorBox);
         colorBox.innerHTML = (colorList || []).map(c => `
           <label style="display:flex;gap:8px;margin-bottom:6px;">
             <input type="checkbox"
