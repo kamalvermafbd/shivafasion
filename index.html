@@ -1369,91 +1369,96 @@
   
   <!-- 🔥 YAHI PASTE KARNA HAI -->
   <div id="updateItemModal" class="modalitem-overlay">
-    <div class="manage-modal-box">
-      <h3>✏️ Update Item</h3>
-  <div class="price-form">
-  
-    <div class="form-row">
-      <label>Name</label>
-      <input id="updateName" type="text">
-    </div>
-  
-    <div class="form-row">
-      <label>Section</label>
-      <select id="updateSection" onchange="loadUpdateCategoryDropdown()">
-        <option>Loading...</option>
-      </select>
-    </div>
-  
-  
-    
-    <div class="form-row">
-      <label>Category</label>
-      <select id="updateCategory">
-        <option>Select Category</option>
-      </select>
-    </div>
-  
-    <div class="form-row">
-    <label>Fabric</label>
-    <input id="updateFabric" type="text">
-  </div>
-    
-    <div class="form-row">
-      <label>GSM</label>
-      <select id="updateGSM">
-        <option>Loading...</option>
-      </select>
-    </div>
-  
-    <div class="form-row color-row">
-      <label>Colors</label>
-  
-      <div class="multi-select-dropdown">
-        <div id="updateColorBtn"
-       class="multi-select-btn"
-       onclick="toggleUpdateColorDropdown()">
-    Select Colors ▼
-  </div>
-  
-        <div id="updateColors" class="multi-select-list" style="display:none;"></div>
+  <div class="manage-modal-box">
+    <h3>✏️ Update Item</h3>
+
+    <div class="price-form">
+
+      <div class="form-row">
+        <label>Name</label>
+        <input id="updateName" type="text" placeholder="Loading..." disabled>
       </div>
+
+      <div class="form-row">
+        <label>Section</label>
+        <select id="updateSection"
+                onchange="loadUpdateCategoryDropdown()"
+                disabled>
+          <option>Loading...</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Category</label>
+        <select id="updateCategory" disabled>
+          <option>Loading...</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Fabric</label>
+        <input id="updateFabric"
+               type="text"
+               placeholder="Loading..."
+               disabled>
+      </div>
+
+      <div class="form-row">
+        <label>GSM</label>
+        <select id="updateGSM" disabled>
+          <option>Loading...</option>
+        </select>
+      </div>
+
+      <div class="form-row color-row">
+        <label>Colors</label>
+
+        <div class="multi-select-dropdown">
+          <div id="updateColorBtn"
+               class="multi-select-btn">
+            Loading...
+          </div>
+
+          <div id="updateColors"
+               class="multi-select-list"
+               style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Description</label>
+        <textarea id="updateDescription"
+                  rows="3"
+                  style="width:100%; min-height:80px; resize:vertical;"
+                  placeholder="Loading..."
+                  disabled></textarea>
+      </div>
+
+      <div class="form-row">
+        <label>Image URL</label>
+        <input id="updateImage"
+               type="text"
+               placeholder="Loading..."
+               disabled>
+      </div>
+
+      <div class="form-row">
+        <label>Hot Selling</label>
+        <input id="updateHot"
+               type="checkbox"
+               style="width:20px;height:20px;margin:0;"
+               disabled>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+        <button onclick="updateExistingItem()">Update Item</button>
+        <button onclick="closeUpdateModal()">Cancel</button>
+      </div>
+
     </div>
-  <div class="form-row">
-    <label>Description</label>
-    <textarea id="updateDescription"
-      rows="3"
-      style="width:100%; min-height:80px; resize:vertical;">
-    </textarea>
   </div>
-  
-  <div class="form-row">
-    <label>Image URL</label>
-    <input id="updateImage" type="text">
-  </div>
-  
- <div class="form-row">
-  <label>Hot Selling</label>
-  <input id="updateHot"
-         type="checkbox"
-         style="width:20px;height:20px;margin:0;">
 </div>
-    
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
-      <button onclick="updateExistingItem()">Update Item</button>
-      <button onclick="closeUpdateModal()">Cancel</button>
-    </div>
   
-  </div>
-  
-  
-    </div>
-  </div>
-  
-  
-  
-        
-        
   <div id="pageTableStatus" class="page" style="display:none;">
     <div class="container pos-full">
       <h2>Table Status</h2>
