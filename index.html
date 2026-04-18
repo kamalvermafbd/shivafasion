@@ -8510,13 +8510,12 @@ async function uploadUpdateItemImage(inputEl) {
   console.log("FILES:", inputEl.files);
 
   const modal = document.getElementById("updateItemModal");
-
   const imgInput = document.getElementById("updateImage");
-const span = imgInput;
-const previewImg = null;
+  const span = imgInput; // same input used for URL display
+  const previewImg = null; // preview image not used yet
 
-  if (!span) {
-    console.error("❌ update img-url span not found");
+  if (!imgInput) {
+    console.error("❌ update image input not found");
     alert("Update Upload UI missing");
     return;
   }
@@ -8528,14 +8527,16 @@ const previewImg = null;
   const file = inputEl.files && inputEl.files[0];
 
   if (!file) {
+    modal.dataset.uploading = "0";
     hideUploadOverlay(modal);
     return alert("No file selected");
   }
 
-  span.textContent = "Uploading...";
-  span.removeAttribute("data-url");
+  // input hai, textContent nahi value use hoga
+  span.value = "Uploading...";
 
   if (!file.type.startsWith("image/")) {
+    modal.dataset.uploading = "0";
     hideUploadOverlay(modal);
     return alert("Only image files allowed");
   }
@@ -8544,7 +8545,10 @@ const previewImg = null;
 
   reader.onerror = function (err) {
     console.error("❌ FileReader error:", err);
+
+    modal.dataset.uploading = "0";
     hideUploadOverlay(modal);
+
     alert("File read error");
   };
 
@@ -8554,14 +8558,19 @@ const previewImg = null;
 
       if (!dataUrl) {
         console.error("❌ FileReader result empty", e);
+
+        modal.dataset.uploading = "0";
         hideUploadOverlay(modal);
+
         return alert("File read failed (empty result)");
       }
 
       const base64 = dataUrl.split(",")[1];
 
       if (!base64) {
+        modal.dataset.uploading = "0";
         hideUploadOverlay(modal);
+
         return alert("Invalid image data");
       }
 
@@ -8588,12 +8597,16 @@ const previewImg = null;
         modal.dataset.uploading = "0";
         hideUploadOverlay(modal);
 
-        span.setAttribute("data-url", url);
-        span.dataset.url = url;
-        span.textContent = "Uploaded";
+        // URL directly input me set hoga
+        span.value = url;
 
-        if (imgInput) imgInput.value = url;
-        if (previewImg) previewImg.src = url + "?v=" + Date.now();
+        if (imgInput) {
+          imgInput.value = url;
+        }
+
+        if (previewImg) {
+          previewImg.src = url + "?v=" + Date.now();
+        }
       })
       .catch(function (err) {
         console.error("🔥 FINAL ERROR:", err);
@@ -8601,13 +8614,17 @@ const previewImg = null;
         modal.dataset.uploading = "0";
         hideUploadOverlay(modal);
 
-        span.textContent = "Upload failed";
+        span.value = "Upload failed";
 
         alert("Upload failed: " + err);
       });
 
     } catch (err) {
       console.error("🔥 JS CRASH:", err);
+
+      modal.dataset.uploading = "0";
+      hideUploadOverlay(modal);
+
       alert("JS Crash: " + err.message);
     }
   };
