@@ -1431,6 +1431,14 @@
   <div class="manage-modal-box">
     <h3>✏️ Update Item</h3>
 
+<div class="form-row">
+  <label>Item ID</label>
+  <input id="updateItemId"
+         type="text"
+         placeholder="Auto"
+         disabled>
+</div>
+    
     <div class="price-form">
 
       <div class="form-row">
@@ -2912,7 +2920,7 @@ async function updateExistingItem() {
   );
 
   const payload = {
-    itemId: window.currentEditId || "",
+   itemId: document.getElementById("updateItemId")?.value || "",
 
     Name: document.getElementById("updateName")?.value?.trim() || "",
     Section: document.getElementById("updateSection")?.value || "",
@@ -2967,6 +2975,7 @@ async function updateExistingItem() {
   );
 
   const allFields = [
+    document.getElementById("updateItemId"),
     document.getElementById("updateName"),
     document.getElementById("updateSection"),
     document.getElementById("updateCategory"),
@@ -3028,7 +3037,8 @@ async function updateExistingItem() {
   // =========================
   // 🔥 BASIC FIELDS
   // =========================
-
+document.getElementById("updateItemId").value =
+  item.itemId || "";
   document.getElementById("updateName").value =
     item.Name || "";
 
@@ -3095,6 +3105,8 @@ async function updateExistingItem() {
 
   console.log("✅ Update modal ready", item);
 }
+
+      
   async function loadUpdateMasters(){
   
     try{
