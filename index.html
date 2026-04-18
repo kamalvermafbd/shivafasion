@@ -6641,18 +6641,18 @@ console.log("✅ Update masters fully loaded");
   <td class="collectionCell">
     <div class="actionWrap">
   
-      <button class="cashBtn"
+    <button class="cashBtn"
   data-order="${order.OrderNumber}"
   data-date="${order.Date}"
-  ${String(order.PaymentMethod || "").toLowerCase() === "cash" ? "disabled" : ""}>
-  ${String(order.PaymentMethod || "").toLowerCase() === "cash" ? "Cash ✓" : "Cash"}
+  ${Number(order.Cash || 0) > 0 ? "disabled" : ""}>
+  ${Number(order.Cash || 0) > 0 ? "Cash ✓" : "Cash"}
 </button>
 
 <button class="onlineBtn"
   data-order="${order.OrderNumber}"
   data-date="${order.Date}"
-  ${String(order.PaymentMethod || "").toLowerCase() === "online" ? "disabled" : ""}>
-  ${String(order.PaymentMethod || "").toLowerCase() === "online" ? "Online ✓" : "Online"}
+  ${Number(order.Online || 0) > 0 ? "disabled" : ""}>
+  ${Number(order.Online || 0) > 0 ? "Online ✓" : "Online"}
 </button>
   
     </div>
