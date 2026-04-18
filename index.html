@@ -8694,7 +8694,15 @@ console.log("COLOR BOX FOUND:", !!colorBox);
       if (colorBox) colorBox.innerHTML = "Failed to load colors";
     }
   }
-  
+  function toggleColorDropdown(){
+  const list = document.getElementById("newItemColors");
+  if(!list) return;
+
+  list.style.display =
+    list.style.display === "block" ? "none" : "block";
+}
+
+
   function updateUpdateColorText(){
   
     const selected = [...document.querySelectorAll("#updateColors input:checked")]
