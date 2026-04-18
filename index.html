@@ -1721,7 +1721,7 @@
     </div>
   
   <script>
-    const API_BASE_URL = "https://script.google.com/macros/s/AKfycbzpxQ43uRoSirz61a_f1yzqfsC9EcTpiquNsMhxTuzUnGKzVcQY5WHZyoSkAw7Fkdu62g/exec";
+    const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxqmSank-8G9X_qf-MBK9Xa9WQUE-CCf2fxsbJlsB2UhKSsFSogQDrcURwTPVyFXGhHlw/exec";
   
   // =========================
   // GET API
@@ -6658,6 +6658,13 @@ console.log("✅ Update masters fully loaded");
     : ""}>
   ${Number(order.Online || 0) > 0 ? "Online ✓" : "Online"}
 </button>
+
+<button class="clearBtn"
+  data-order="${order.OrderNumber}"
+  data-date="${order.Date}">
+   Reset
+</button>
+
   
     </div>
   </td>
@@ -6790,7 +6797,26 @@ console.log("✅ Update masters fully loaded");
   
     });
   });
-  
+
+      document.querySelectorAll('.clearBtn').forEach(btn => {
+  btn.addEventListener('click', function(){
+
+    const orderNumber = this.getAttribute('data-order');
+    const orderDate = this.getAttribute('data-date');
+
+    apiGet("clearPayment", {
+      orderNumber,
+      orderDate
+    }).then(res => {
+      if(res.success){
+        loadOrders();
+      } else {
+        alert("Failed");
+      }
+    });
+
+  });
+});
   
       
   // 🔥 FLOW BUTTON LISTENER
