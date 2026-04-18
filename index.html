@@ -6642,16 +6642,18 @@ console.log("✅ Update masters fully loaded");
     <div class="actionWrap">
   
       <button class="cashBtn"
-        data-order="${order.OrderNumber}"
-        data-date="${order.Date}">
-        Cash
-      </button>
-  
-      <button class="onlineBtn"
-        data-order="${order.OrderNumber}"
-        data-date="${order.Date}">
-        Online
-      </button>
+  data-order="${order.OrderNumber}"
+  data-date="${order.Date}"
+  ${String(order.PaymentMethod || "").toLowerCase() === "cash" ? "disabled" : ""}>
+  ${String(order.PaymentMethod || "").toLowerCase() === "cash" ? "Cash ✓" : "Cash"}
+</button>
+
+<button class="onlineBtn"
+  data-order="${order.OrderNumber}"
+  data-date="${order.Date}"
+  ${String(order.PaymentMethod || "").toLowerCase() === "online" ? "disabled" : ""}>
+  ${String(order.PaymentMethod || "").toLowerCase() === "online" ? "Online ✓" : "Online"}
+</button>
   
     </div>
   </td>
