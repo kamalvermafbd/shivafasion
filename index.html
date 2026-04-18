@@ -2853,10 +2853,13 @@
   // 🔥 Extra editable fields
   document.getElementById("updateFabric").value = item.Fabric || "";
   document.getElementById("updateDescription").value = item.Description || "";
-  document.getElementById("updateImage").value = item.Image || "";
+ document.getElementById("updateImage").value =
+  item["Image Url"] || item.Image || "";
 
-  document.getElementById("updateHot").checked =
-    String(item.Hot || "").toLowerCase() === "true";
+document.getElementById("updateHot").checked =
+  String(item.Hotselling || item.Hot || "")
+    .toLowerCase()
+    .trim() === "true";
 
   console.log("✅ Update modal ready", item);
 }
