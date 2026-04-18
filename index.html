@@ -2844,13 +2844,20 @@ async function loadUpdateMasters(){
 
     const sectionEl = document.getElementById("updateSection");
 
-    if(sectionEl){
-      sectionEl.innerHTML =
-        `<option value="">Select Section</option>` +
-        (sectionList || []).map(s =>
-          `<option value="${s.Section}">${s.Section}</option>`
-        ).join("");
-    }
+  if(sectionEl){
+
+  console.log("SECTION MASTER:", sectionList);
+
+  const finalSections = Array.isArray(sectionList)
+    ? sectionList
+    : (sectionList.data || []);
+
+  sectionEl.innerHTML =
+    `<option value="">Select Section</option>` +
+    finalSections.map(s =>
+      `<option value="${s.Section}">${s.Section}</option>`
+    ).join("");
+}
 
     // 🔥 IMPORTANT
     await loadSectionCategory();
