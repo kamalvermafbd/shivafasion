@@ -1383,7 +1383,7 @@
         <label>Section</label>
         <select id="updateSection"
                 onchange="loadUpdateCategoryDropdown()"
-                disabled>
+                >
           <option>Loading...</option>
         </select>
       </div>
@@ -1415,8 +1415,9 @@
 
         <div class="multi-select-dropdown">
           <div id="updateColorBtn"
-               class="multi-select-btn">
-            Loading...
+               class="multi-select-btn" 
+            onclick="toggleUpdateColorDropdown()">
+            Loading colors... ▼
           </div>
 
           <div id="updateColors"
