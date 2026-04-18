@@ -2976,33 +2976,54 @@ document.getElementById("updateHot").checked =
       // ✅ COLORS
       // =====================
   
-      const colorBox = document.getElementById("updateColors");
-  
-      if(colorBox){
-        console.log("COLOR API:", colorList);
-console.log("COLOR BOX FOUND:", !!colorBox);
-        colorBox.innerHTML = (colorList || []).map(c => `
-          <label style="display:flex;gap:8px;margin-bottom:6px;">
-            <input type="checkbox"
-                   value="${c.Color}"
-                   onchange="updateUpdateColorText()">
-            <span>${c.Color}</span>
-          </label>
-        `).join("");
-      }
-  
-      const btn = document.getElementById("updateColorBtn");
-  
-      if(btn){
-        btn.innerText = "Select Colors ▼";
-      }
-  
-      console.log("✅ Update masters fully loaded");
-  
-    } catch(err){
-      console.error("Update master error:", err);
-    }
-  }
+        const colorBox = document.getElementById("updateColors");
+
+if (colorBox) {
+  console.log("COLOR API:", colorList);
+  console.log("COLOR BOX FOUND:", !!colorBox);
+
+  colorBox.innerHTML = (colorList || []).map(c => `
+    <label style="
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+    ">
+
+      <input
+        type="checkbox"
+        value="${c.Color}"
+        onchange="updateUpdateColorText()"
+      >
+
+      <span style="
+        width:14px;
+        height:14px;
+        background:${c.Hex || c.Color};
+        border:1px solid #ccc;
+        display:inline-block;
+        border-radius:3px;
+        flex-shrink:0;
+      "></span>
+
+      <span>${c.Color}</span>
+
+    </label>
+  `).join("");
+}
+
+const btn = document.getElementById("updateColorBtn");
+
+if (btn) {
+  btn.innerText = "Select Colors ▼";
+}
+
+console.log("✅ Update masters fully loaded");
+
+} catch (err) {
+  console.error("Update master error:", err);
+}
+}
     
     function setUpdateSelectedColors(colorsString){
   
