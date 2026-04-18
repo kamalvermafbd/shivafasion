@@ -6644,14 +6644,18 @@ console.log("✅ Update masters fully loaded");
     <button class="cashBtn"
   data-order="${order.OrderNumber}"
   data-date="${order.Date}"
-  ${Number(order.Cash || 0) > 0 ? "disabled style='background:#ccc;color:#666;cursor:not-allowed;'" : ""}>
+  ${Number(order.Cash || 0) > 0 
+    ? "disabled style='background:#bdbdbd !important; color:#666 !important; cursor:not-allowed; border:none;'" 
+    : ""}>
   ${Number(order.Cash || 0) > 0 ? "Cash ✓" : "Cash"}
 </button>
 
 <button class="onlineBtn"
   data-order="${order.OrderNumber}"
   data-date="${order.Date}"
-  ${Number(order.Online || 0) > 0 ? "disabled style='background:#ccc;color:#666;cursor:not-allowed;'" : ""}>
+  ${Number(order.Online || 0) > 0 
+    ? "disabled style='background:#bdbdbd !important; color:#666 !important; cursor:not-allowed; border:none;'" 
+    : ""}>
   ${Number(order.Online || 0) > 0 ? "Online ✓" : "Online"}
 </button>
   
