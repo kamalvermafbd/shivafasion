@@ -8718,12 +8718,12 @@ console.log("COLOR BOX FOUND:", !!colorBox);
   }
     
   function toggleUpdateColorDropdown(){
-    const box = document.getElementById("updateColors");
-    if(!box) return;
-  
-    box.style.display =
-      box.style.display === "none" ? "block" : "none";
-  }
+  const box = document.getElementById("updateColors");
+  if(!box) return;
+
+  box.style.display =
+    box.style.display === "block" ? "none" : "block";
+}
   
     document.getElementById("sectionFilter")
     .addEventListener("change", applyMenuFilter);
