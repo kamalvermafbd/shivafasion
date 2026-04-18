@@ -8510,9 +8510,10 @@ async function uploadUpdateItemImage(inputEl) {
   console.log("FILES:", inputEl.files);
 
   const modal = document.getElementById("updateItemModal");
-  const span = document.getElementById("update-img-url");
-  const imgInput = document.getElementById("update-img-input");
-  const previewImg = document.getElementById("update-preview-img");
+
+  const imgInput = document.getElementById("updateImage");
+const span = imgInput;
+const previewImg = null;
 
   if (!span) {
     console.error("❌ update img-url span not found");
@@ -9501,6 +9502,7 @@ async function uploadUpdateItemImage(inputEl) {
       btn.textContent = "Update Item";
     }
   }
+    
   function editRow(index) {
   
     // 🔥 Prevent editing another row while one is active
