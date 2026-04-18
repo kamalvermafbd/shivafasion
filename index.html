@@ -6798,21 +6798,33 @@ console.log("✅ Update masters fully loaded");
     });
   });
 
-      document.querySelectorAll('.clearBtn').forEach(btn => {
+   document.querySelectorAll('.clearBtn').forEach(btn => {
   btn.addEventListener('click', function(){
 
     const orderNumber = this.getAttribute('data-order');
     const orderDate = this.getAttribute('data-date');
 
+    this.disabled = true;
+    this.textContent = "Resetting...";
+
     apiGet("clearPayment", {
       orderNumber,
       orderDate
-    }).then(res => {
+    })
+    .then(res => {
       if(res.success){
         loadOrders();
       } else {
         alert("Failed");
+        this.disabled = false;
+        this.textContent = "Reset";
       }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Server error");
+      this.disabled = false;
+      this.textContent = "Reset";
     });
 
   });
