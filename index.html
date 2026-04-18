@@ -1494,14 +1494,27 @@
                   ></textarea>
       </div>
 
-      <div class="form-row">
-        <label>Image URL</label>
-        <input id="updateImage"
-               type="text"
-               placeholder="Loading..."
-        >
-      </div>
+    <div class="form-row">
+  <label>Image URL</label>
 
+  <div class="field-wrap">
+    <input id="updateImage"
+           type="text"
+           placeholder="Loading...">
+
+    <label for="updateItemImageUpload"
+           style="cursor:pointer;font-size:18px;">
+      📤
+    </label>
+
+    <input id="updateItemImageUpload"
+           type="file"
+           accept="image/*"
+           style="display:none"
+           onchange="uploadUpdateItemImage(this)">
+  </div>
+</div>
+      
       <div class="form-row">
         <label>Hot Selling</label>
         <input id="updateHot"
