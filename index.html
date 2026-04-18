@@ -7294,6 +7294,7 @@ console.log("✅ Update masters fully loaded");
     let totalCash = 0;
     let totalOnline = 0;
   let totalNetPayable = 0;
+    let totalBalance = 0;
     let html = "";
   
     data.forEach(order => {
@@ -7302,7 +7303,7 @@ console.log("✅ Update masters fully loaded");
   const netPayableVal = Number(order.netpayable) || 0;
   const balanceVal = Number(order.Balance) || 0;
 totalNetPayable += netPayableVal;
-      
+      totalBalance += balanceVal;
    // 🔴 ALWAYS SHOW VALUES
       let netPayable = "₹" + formatCurrency(netPayableVal);
       let balance = "₹" + formatCurrency(balanceVal);
@@ -7384,7 +7385,10 @@ totalNetPayable += netPayableVal;
       <td style="text-align:right; color:red;">
         ${formatCurrency(totalOnline)}
       </td>
-      <td></td>
+    <td style="text-align:right; color:red;">
+  ${formatCurrency(totalBalance)}
+</td>
+<td></td>
     </tr>
   `;
     // 👉 Table fill
