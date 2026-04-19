@@ -1431,8 +1431,6 @@
   <div class="manage-modal-box">
     <h3>✏️ Update Item</h3>
 
-
-    
     <div class="price-form">
 
       <div class="form-row">
@@ -1523,6 +1521,13 @@
            style="display:none"
            onchange="uploadUpdateItemImage(this)">
   </div>
+</div>
+
+<div class="form-row">
+  <label>Hold</label>
+  <input id="updateHold"
+         type="checkbox"
+         style="width:20px;height:20px;margin:0;">
 </div>
       
       <div class="form-row">
@@ -1721,7 +1726,7 @@
     </div>
   
   <script>
-    const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxqmSank-8G9X_qf-MBK9Xa9WQUE-CCf2fxsbJlsB2UhKSsFSogQDrcURwTPVyFXGhHlw/exec";
+    const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwGWzzhfWtDwUk8uWLCMlRu1vMPOwk6norcQj22YoEwKoQuf5JHl2SUDoDh0RGETYzyWA/exec";
   
   // =========================
   // GET API
@@ -2931,7 +2936,7 @@ async function updateExistingItem() {
     GSM: document.getElementById("updateGSM")?.value || "",
     Description: document.getElementById("updateDescription")?.value?.trim() || "",
     ImageUrl: document.getElementById("updateImage")?.value?.trim() || "",
-
+Hold: document.getElementById("updateHold")?.checked ? "TRUE" : "FALSE",
     Hotselling: document.getElementById("updateHot")?.checked ? "TRUE" : "FALSE",
 
     Colors: getUpdateSelectedColors
@@ -2985,6 +2990,7 @@ async function updateExistingItem() {
     document.getElementById("updateGSM"),
     document.getElementById("updateDescription"),
     document.getElementById("updateImage"),
+    document.getElementById("updateHold"),
     document.getElementById("updateHot"),
     document.getElementById("updateColorBtn")
   ];
@@ -3071,6 +3077,11 @@ document.getElementById("updateItemId").value =
 
   document.getElementById("updateImage").value =
     item["Image Url"] || item.Image || "";
+
+   document.getElementById("updateHold").checked =
+  String(item.Hold || item.hold || "")
+    .toLowerCase()
+    .trim() === "true";
 
   document.getElementById("updateHot").checked =
     String(item.Hotselling || item.Hot || "")
