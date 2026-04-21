@@ -1807,7 +1807,9 @@
   if (pageId === 'pageCouponStatus') {
     setTimeout(loadCouponStatus, 50);
   }
-  
+  if (pageId === 'pageOrders') {
+  loadRestaurantInfo();
+}
     if (pageId === 'pagePOS') {
       isCustomerFetched = false;   // ✅ RESET
   checkBillReady();            // ✅ DISABLE BUTTONS
