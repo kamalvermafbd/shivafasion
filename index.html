@@ -1232,22 +1232,37 @@
   <div id="closeSidebar" style="text-align:right;padding:5px 10px;cursor:pointer;font-size:18px;">
     ❌
   </div>
-        <div class="nav-title">Dashboard</div>
+   <div class="nav-title" id="navTitle" style="display:none;">
+  Dashboard
+</div>
+
+        
           <div id="loggedInUser" style="padding:10px 18px;font-size:13px;color:#ccc;"></div>
-        <button class="nav-btn active" data-page="pageLogin">Login</button>
+        
+<button class="nav-btn active" data-page="pageLogin" style="display:none;">
+  Login
+</button>
+        
         <button class="nav-btn" data-page="pageOrders">Pending Orders</button>
-        <button class="nav-btn" data-page="pagePOS">POS</button>
+        
+<button class="nav-btn" data-page="pagePOS" style="display:none;">
+  POS
+</button>
+        
   
   <button class="nav-btn"
-          data-page="pageTableStatus"
-          id="tableStatusTab"
-          style="display:block;">
-    Table Status
-  </button>
+        data-page="pageTableStatus"
+        id="tableStatusTab"
+        style="display:none;">
+  Table Status
+</button>
         
-        <button class="nav-btn" data-page="pageSummary">Summary</button>
+        <button class="nav-btn" data-page="pageSummary" style="display:none;">
+  Summary
+</button>
+        
         <!-- Menu tab (only visible to Admin) -->
-  <button class="nav-btn" data-page="pageMenu" id="menuTab" style="display:none;">Menu</button>
+  <button class="nav-btn" data-page="pageMenu" id="menuTab" style="display:block;">Menu</button>
   
     <button class="nav-btn"
           data-page="pageTable"
@@ -4644,6 +4659,32 @@ console.log("✅ Update masters fully loaded");
     apiGet("getRestaurantInfo")
       .then(res => {
         restaurantInfo = res || {};
+        const isHotel =
+  String(restaurantInfo.Industry || "")
+    .trim()
+    .toLowerCase() === "hotel";
+
+document.querySelector('.nav-btn[data-page="pageLogin"]').style.display =
+  isHotel ? "block" : "none";
+
+document.querySelector('.nav-btn[data-page="pagePOS"]').style.display =
+  isHotel ? "block" : "none";
+
+document.getElementById("tableStatusTab").style.display =
+  isHotel ? "block" : "none";
+
+document.querySelector('.nav-btn[data-page="pageSummary"]').style.display =
+  isHotel ? "block" : "none";
+
+document.getElementById("tableTab").style.display =
+  isHotel ? "block" : "none";
+
+document.getElementById("couponStatusTab").style.display =
+  isHotel ? "block" : "none";
+
+        document.getElementById("navTitle").style.display =
+  isHotel ? "block" : "none";
+        
         console.log("Restaurant Info Loaded:", restaurantInfo);
         renderCart(); // 🔥 VERY IMPORTANT
       })
