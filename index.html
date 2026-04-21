@@ -7273,14 +7273,14 @@ document.getElementById("couponStatusTab").style.display =
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('pendingOrder').style.display = 'block';
    document.getElementById('logoutBtn').style.display = 'block'; 
-        const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
-  showPage(savedPage);
+       localStorage.setItem("adminActivePage", "pageOrders");
+showPage("pageOrders");
   
-  if (savedPage === "pageOrders") {
+  
     setTimeout(function(){
       loadOrders();
     }, 100);
-  }
+  
         loadYearOptions();
         window.refreshInterval = setInterval(function(){
     if (localStorage.getItem("adminActivePage") === "pageOrders") {
