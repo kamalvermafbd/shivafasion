@@ -9521,9 +9521,14 @@ document.addEventListener("click", function (e) {
     <td>${index + 1}</td>
   
    <td style="vertical-align:top;line-height:1.6;">
-    <div style="font-weight:600;">
-      ${esc(item["Name"])}
-    </div>
+  <div style="font-weight:600;">
+    ${esc(item["Name"])}
+  </div>
+
+  <div style="font-size:13px;color:#666;margin-top:2px;">
+    ${esc(item["Section"])} • ${esc(item["Category"])}
+  </div>
+  
   
     ${
       String(item["Cat2"] || "").toLowerCase() === "multi"
