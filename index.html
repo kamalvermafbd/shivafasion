@@ -1227,7 +1227,7 @@
   <body>
   
     <div class="nav-wrap" id="navWrap">
-      <div class="nav-side" id="navSide">
+    <div class="nav-side" id="navSide" style="visibility:hidden;">
         <!-- 🔴 CLOSE BUTTON -->
   <div id="closeSidebar" style="text-align:right;padding:5px 10px;cursor:pointer;font-size:18px;">
     ❌
@@ -4686,6 +4686,8 @@ document.getElementById("couponStatusTab").style.display =
 
         document.getElementById("navTitle").style.display =
   isHotel ? "block" : "none";
+        
+        document.getElementById("navSide").style.visibility = "visible";
         
         console.log("Restaurant Info Loaded:", restaurantInfo);
         renderCart(); // 🔥 VERY IMPORTANT
