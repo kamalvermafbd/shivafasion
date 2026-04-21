@@ -1,4 +1,4 @@
-const CACHE_NAME = "shiva-admin-cache-v2"; // 🔥 version update
+const CACHE_NAME = "shiva-admin-cache-v3"; // 🔥 version update
 
 const URLS_TO_CACHE = [
   "/",
